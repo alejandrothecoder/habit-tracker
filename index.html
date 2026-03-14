@@ -7,201 +7,133 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { height: 100%; }
-
   body.dark {
-    --bg:        #0e1520;
-    --card:      #1a2433;
-    --card2:     #111820;
-    --border:    #243044;
-    --border2:   #1a2636;
-    --text1:     #c8dcf4;
-    --text2:     #7a9ab8;
-    --text3:     #3a5878;
-    --accent:    #3a7ed8;
-    --accent2:   #5a9ef8;
-    --cb-bg:     #1a2433;
-    --cb-border: #2a3d54;
-    --ring-track:#1a2e44;
-    --week-bg:   #141d2a;
-    --pct-bg:    #111820;
-    --daynum-bg: #0e1520;
-    --shadow:    rgba(0,0,0,0.4);
-    --scroll-track: #111820;
-    --scroll-thumb: #2a3d54;
-    --scroll-thumb-hover: #3a5878;
+    --bg:#0e1520;--card:#1a2433;--card2:#111820;--border:#243044;--border2:#1a2636;
+    --text1:#c8dcf4;--text2:#7a9ab8;--text3:#3a5878;--accent:#3a7ed8;--accent2:#5a9ef8;
+    --cb-bg:#1a2433;--cb-border:#2a3d54;--ring-track:#1a2e44;--week-bg:#141d2a;
+    --pct-bg:#111820;--daynum-bg:#0e1520;--shadow:rgba(0,0,0,0.4);
+    --scroll-track:#111820;--scroll-thumb:#2a3d54;--scroll-hover:#3a5878;
   }
   body.light {
-    --bg:        #d4e4f4;
-    --card:      #f0f6fc;
-    --card2:     #ffffff;
-    --border:    #c0d4e8;
-    --border2:   #ddeaf6;
-    --text1:     #1a2a4a;
-    --text2:     #4a6a8a;
-    --text3:     #8aaac8;
-    --accent:    #3a7ed8;
-    --accent2:   #5a9ef8;
-    --cb-bg:     #ffffff;
-    --cb-border: #b0c8e0;
-    --ring-track:#ddeeff;
-    --week-bg:   #e8f2fc;
-    --pct-bg:    #eef4fc;
-    --daynum-bg: #f4f8fd;
-    --shadow:    rgba(60,90,140,0.1);
-    --scroll-track: #e0eaf6;
-    --scroll-thumb: #b0cce8;
-    --scroll-thumb-hover: #8aaecc;
+    --bg:#d4e4f4;--card:#f0f6fc;--card2:#ffffff;--border:#c0d4e8;--border2:#ddeaf6;
+    --text1:#1a2a4a;--text2:#4a6a8a;--text3:#8aaac8;--accent:#3a7ed8;--accent2:#5a9ef8;
+    --cb-bg:#ffffff;--cb-border:#b0c8e0;--ring-track:#ddeeff;--week-bg:#e8f2fc;
+    --pct-bg:#eef4fc;--daynum-bg:#f4f8fd;--shadow:rgba(60,90,140,0.1);
+    --scroll-track:#e0eaf6;--scroll-thumb:#b0cce8;--scroll-hover:#8aaecc;
   }
+  body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; background:var(--bg); color:var(--text1); font-size:15px; transition:background 0.3s,color 0.3s; }
+  ::-webkit-scrollbar{width:7px;height:7px}
+  ::-webkit-scrollbar-track{background:var(--scroll-track);border-radius:4px}
+  ::-webkit-scrollbar-thumb{background:var(--scroll-thumb);border-radius:4px}
+  ::-webkit-scrollbar-thumb:hover{background:var(--scroll-hover)}
+  ::-webkit-scrollbar-corner{background:var(--scroll-track)}
+  *{scrollbar-width:thin;scrollbar-color:var(--scroll-thumb) var(--scroll-track)}
 
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text1); font-size: 15px; transition: background 0.3s, color 0.3s; }
+  .login-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:500}
+  .login-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:48px 40px;width:360px;text-align:center;box-shadow:0 20px 60px var(--shadow)}
+  .login-icon{width:56px;height:56px;background:var(--accent);border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px}
+  .login-icon svg{fill:white}
+  .login-title{font-size:22px;font-weight:900;color:var(--text1);margin-bottom:6px}
+  .login-sub{font-size:14px;color:var(--text3);margin-bottom:32px}
+  .google-btn{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;padding:14px;background:white;color:#1a2a4a;border:1.5px solid #d0d8e0;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.1);transition:box-shadow 0.2s,transform 0.1s}
+  .google-btn:hover{box-shadow:0 4px 16px rgba(0,0,0,0.15);transform:translateY(-1px)}
+  .google-logo{width:22px;height:22px;flex-shrink:0}
+  .login-status{font-size:13px;color:var(--text3);margin-top:14px;min-height:20px}
 
-  ::-webkit-scrollbar { width: 7px; height: 7px; }
-  ::-webkit-scrollbar-track { background: var(--scroll-track); border-radius: 4px; }
-  ::-webkit-scrollbar-thumb { background: var(--scroll-thumb); border-radius: 4px; }
-  ::-webkit-scrollbar-thumb:hover { background: var(--scroll-thumb-hover); }
-  ::-webkit-scrollbar-corner { background: var(--scroll-track); }
-  * { scrollbar-width: thin; scrollbar-color: var(--scroll-thumb) var(--scroll-track); }
+  .nav{background:var(--card);border-bottom:1px solid var(--border);padding:0 28px;display:flex;align-items:center;height:62px}
+  .nav-icon{width:40px;height:40px;background:var(--accent);border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .nav-icon svg{fill:white}
+  .nav-brand{line-height:1.2;margin-left:12px}
+  .nav-brand .sub{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:0.1em}
+  .nav-brand .main{font-size:16px;font-weight:800;color:var(--text1)}
+  .nav-right{margin-left:auto;display:flex;align-items:center;gap:16px}
+  .nav-email{font-size:13px;color:var(--text3)}
+  .nav-avatar{width:32px;height:32px;border-radius:50%;border:2px solid var(--border);object-fit:cover}
+  .nav-signout{font-size:13px;color:var(--text2);cursor:pointer;font-weight:600;padding:6px 12px;border:1px solid var(--border);border-radius:8px;background:transparent}
+  .nav-signout:hover{border-color:var(--accent);color:var(--accent)}
+  .toggle-wrap{display:flex;align-items:center;gap:8px}
+  .toggle-label{font-size:12px;color:var(--text3);font-weight:600;user-select:none}
+  .toggle{width:46px;height:24px;background:var(--card2);border:1.5px solid var(--border);border-radius:12px;cursor:pointer;position:relative;flex-shrink:0}
+  .toggle-knob{position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:var(--accent);transition:left 0.25s;box-shadow:0 1px 4px rgba(0,0,0,0.3)}
+  body.dark .toggle-knob{left:24px}
 
-  /* LOGIN SCREEN */
-  .login-screen {
-    position: fixed; inset: 0;
-    background: var(--bg);
-    display: flex; align-items: center; justify-content: center;
-    z-index: 500;
-  }
-  .login-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 48px 40px;
-    width: 360px;
-    text-align: center;
-    box-shadow: 0 20px 60px var(--shadow);
-  }
-  .login-icon { width: 56px; height: 56px; background: var(--accent); border-radius: 14px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
-  .login-icon svg { fill: white; }
-  .login-title { font-size: 22px; font-weight: 900; color: var(--text1); margin-bottom: 6px; }
-  .login-sub { font-size: 14px; color: var(--text3); margin-bottom: 32px; }
-  .google-btn {
-    display: flex; align-items: center; justify-content: center; gap: 12px;
-    width: 100%; padding: 14px;
-    background: white; color: #1a2a4a;
-    border: 1.5px solid #d0d8e0; border-radius: 10px;
-    font-size: 15px; font-weight: 700; cursor: pointer;
-    transition: box-shadow 0.2s, transform 0.1s;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  }
-  .google-btn:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.15); transform: translateY(-1px); }
-  .google-btn:active { transform: translateY(0); }
-  .google-logo { width: 22px; height: 22px; flex-shrink: 0; }
-  .login-loading { font-size: 14px; color: var(--text3); margin-top: 16px; }
-
-  /* NAV */
-  .nav { background: var(--card); border-bottom: 1px solid var(--border); padding: 0 28px; display: flex; align-items: center; height: 62px; }
-  .nav-icon { width: 40px; height: 40px; background: var(--accent); border-radius: 9px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-  .nav-icon svg { fill: white; }
-  .nav-brand { line-height: 1.2; margin-left: 12px; }
-  .nav-brand .sub { font-size: 10px; font-weight: 700; color: var(--text3); letter-spacing: 0.1em; }
-  .nav-brand .main { font-size: 16px; font-weight: 800; color: var(--text1); }
-  .nav-right { margin-left: auto; display: flex; align-items: center; gap: 16px; }
-  .nav-email { font-size: 13px; color: var(--text3); }
-  .nav-avatar { width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--border); object-fit: cover; }
-  .nav-signout { font-size: 13px; color: var(--text2); cursor: pointer; font-weight: 600; padding: 6px 12px; border: 1px solid var(--border); border-radius: 8px; background: transparent; }
-  .nav-signout:hover { border-color: var(--accent); color: var(--accent); }
-
-  .toggle-wrap { display: flex; align-items: center; gap: 8px; }
-  .toggle-label { font-size: 12px; color: var(--text3); font-weight: 600; user-select: none; }
-  .toggle { width: 46px; height: 24px; background: var(--card2); border: 1.5px solid var(--border); border-radius: 12px; cursor: pointer; position: relative; flex-shrink: 0; }
-  .toggle-knob { position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; border-radius: 50%; background: var(--accent); transition: left 0.25s; box-shadow: 0 1px 4px rgba(0,0,0,0.3); }
-  body.dark .toggle-knob { left: 24px; }
-
-  /* LAYOUT */
-  .layout { display: flex; gap: 14px; padding: 16px; height: calc(100vh - 62px); overflow: hidden; }
-  .main-card { flex: 1; background: var(--card); border-radius: 18px; padding: 22px; display: flex; flex-direction: column; gap: 14px; overflow: hidden; min-width: 0; box-shadow: 0 4px 24px var(--shadow); }
-  .month-header { display: flex; align-items: baseline; gap: 20px; flex-wrap: wrap; }
-  .month-name { font-size: 42px; font-weight: 900; color: var(--text1); letter-spacing: -1.5px; }
-  .month-quote { font-size: 12.5px; color: var(--text3); font-style: italic; flex: 1; }
-
-  .chart-card { background: var(--card2); border-radius: 12px; padding: 14px 18px; box-shadow: 0 1px 6px var(--shadow); }
-  .chart-label { font-size: 12px; color: var(--text3); font-weight: 700; margin-bottom: 8px; }
-  .chart-wrap { position: relative; height: 140px; }
-
-  .grid-area { display: flex; flex: 1; overflow: hidden; background: var(--card2); border-radius: 12px; box-shadow: 0 1px 6px var(--shadow); }
-  .habit-labels-col { width: 170px; min-width: 170px; border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; flex-shrink: 0; }
-  .habits-col-header { display: flex; justify-content: space-between; align-items: center; padding: 0 14px; border-bottom: 1px solid var(--border); background: var(--week-bg); flex-shrink: 0; }
-  .habits-col-title { font-weight: 800; font-size: 15px; color: var(--text1); }
-  .edit-btn { font-size: 13px; color: var(--accent2); cursor: pointer; font-weight: 600; }
-  .label-spacer { flex-shrink: 0; border-bottom: 1px solid var(--border2); background: var(--daynum-bg); }
-  .label-spacer2 { flex-shrink: 0; border-bottom: 1px solid var(--border); background: var(--daynum-bg); }
-  .habit-label-row { font-size: 15px; color: var(--text2); font-weight: 600; padding: 0 14px; border-bottom: 1px solid var(--border2); display: flex; align-items: center; flex-shrink: 0; }
-  .pct-label-row { font-size: 11px; color: var(--text3); font-weight: 600; padding: 0 14px; display: flex; align-items: center; flex-shrink: 0; background: var(--pct-bg); border-bottom: 1px solid var(--border2); }
-  .dayrepeat-label-row { font-size: 11px; color: var(--text3); padding: 0 14px; display: flex; align-items: center; flex-shrink: 0; background: var(--daynum-bg); }
-
-  .grid-scroll { flex: 1; overflow-x: auto; overflow-y: hidden; }
-  .grid-table { border-collapse: collapse; table-layout: fixed; }
-
-  .week-group-cell { text-align: center; font-size: 12px; font-weight: 700; color: var(--accent); padding: 0 14px; border-right: 2px solid var(--border); border-bottom: 1px solid var(--border); background: var(--week-bg); white-space: nowrap; }
-  .week-group-cell:last-child { border-right: none; }
-  .dow-cell { width: 38px; text-align: center; font-size: 11px; font-weight: 700; color: var(--text3); padding: 4px 0; border-bottom: 1px solid var(--border2); border-right: 1px solid var(--border2); background: var(--daynum-bg); }
-  .dow-cell.we { border-right: 2px solid var(--border); }
-  .dow-cell.weekend { color: var(--accent2); opacity: 0.75; }
-  .day-num-cell { width: 38px; text-align: center; font-size: 13px; font-weight: 700; color: var(--text2); padding: 5px 0; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border2); background: var(--daynum-bg); }
-  .day-num-cell.we { border-right: 2px solid var(--border); }
-  .habit-cb-row td { border-bottom: 1px solid var(--border2); border-right: 1px solid var(--border2); }
-  .habit-cb-row td.we { border-right: 2px solid var(--border); }
-  .cb-cell { width: 38px; text-align: center; padding: 0; }
-  .cb-box { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border: 1.5px solid var(--cb-border); border-radius: 6px; background: var(--cb-bg); cursor: pointer; position: relative; transition: all 0.15s ease; vertical-align: middle; }
-  .cb-box:hover { border-color: var(--accent); }
-  .cb-box.checked { background: var(--accent); border-color: var(--accent2); box-shadow: 0 0 0 4px rgba(58,126,216,0.22), 0 0 10px rgba(58,126,216,0.3); }
-  .cb-box.checked::after { content: ''; position: absolute; left: 6px; top: 3px; width: 7px; height: 11px; border: 2.5px solid white; border-top: none; border-left: none; transform: rotate(45deg); }
-  .pct-row td { background: var(--pct-bg); border-right: 1px solid var(--border2); border-bottom: 1px solid var(--border2); }
-  .pct-row td.we { border-right: 2px solid var(--border); }
-  .pct-badge { display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 4px; border-radius: 10px; min-width: 32px; text-align: center; }
-  .dayrepeat-row td { background: var(--daynum-bg); border-right: 1px solid var(--border2); }
-  .dayrepeat-row td.we { border-right: 2px solid var(--border); }
-  .dayrepeat-cell { width: 38px; text-align: center; font-size: 11px; color: var(--text3); padding: 4px 0; }
-
-  .month-tabs-wrap { background: var(--card2); border-radius: 10px; padding: 0 6px; overflow-x: auto; white-space: nowrap; flex-shrink: 0; }
-  .month-tabs { display: flex; }
-  .month-tab { padding: 9px 10px; font-size: 12px; color: var(--text3); cursor: pointer; white-space: nowrap; border-bottom: 2px solid transparent; display: inline-block; font-weight: 600; }
-  .month-tab.active { color: var(--accent2); border-bottom-color: var(--accent); }
-
-  .right-card { width: 310px; min-width: 310px; background: var(--card); border-radius: 18px; padding: 20px 22px; display: flex; flex-direction: column; overflow-y: auto; box-shadow: 0 4px 24px var(--shadow); }
-  .score-title { font-size: 13px; color: var(--text3); font-weight: 700; margin-bottom: 10px; text-align: center; letter-spacing: 0.06em; text-transform: uppercase; }
-  .score-ring-wrap { position: relative; width: 175px; height: 175px; margin: 0 auto 18px; }
-  .score-ring-wrap canvas { width: 175px; height: 175px; }
-  .score-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); font-size: 28px; font-weight: 900; color: var(--text1); }
-  .prog-title { font-size: 13px; font-weight: 800; color: var(--text2); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px; }
-  .prog-item { margin-bottom: 12px; }
-  .prog-row { display: flex; justify-content: space-between; margin-bottom: 5px; align-items: baseline; }
-  .prog-name { font-size: 14px; color: var(--text2); font-weight: 600; }
-  .prog-bg { height: 10px; background: var(--ring-track); border-radius: 5px; overflow: hidden; }
-  .prog-fill { height: 10px; border-radius: 5px; background: var(--accent); transition: width 0.3s; }
-  .prog-divider { border: none; border-top: 1px solid var(--border); margin: 10px 0; }
-  .prog-avg { display: flex; justify-content: space-between; align-items: baseline; }
-
-  .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.55); display: flex; align-items: center; justify-content: center; z-index: 300; }
-  .modal { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 26px; width: 360px; box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
-  .modal-title { font-size: 17px; font-weight: 800; color: var(--text1); margin-bottom: 18px; }
-  .modal-list { list-style: none; margin-bottom: 16px; }
-  .modal-item { display: flex; align-items: center; justify-content: space-between; padding: 9px 0; border-bottom: 1px solid var(--border2); }
-  .modal-item span { font-size: 15px; color: var(--text2); }
-  .remove-btn { color: #e05050; font-size: 16px; cursor: pointer; border: none; background: none; padding: 0 6px; }
-  .modal-add { display: flex; gap: 8px; margin-bottom: 16px; }
-  .modal-add input { flex: 1; border: 1.5px solid var(--border); border-radius: 8px; padding: 9px 12px; font-size: 15px; outline: none; background: var(--card2); color: var(--text1); }
-  .modal-add input:focus { border-color: var(--accent); }
-  .modal-add button { background: var(--accent); color: white; border: none; border-radius: 8px; padding: 9px 16px; font-size: 15px; cursor: pointer; font-weight: 700; }
-  .modal-close { width: 100%; background: var(--card2); border: 1.5px solid var(--border); border-radius: 10px; padding: 11px; font-size: 15px; cursor: pointer; color: var(--text2); font-weight: 600; }
-
-  .sync-indicator { font-size: 11px; color: var(--text3); text-align: center; padding: 4px 0; }
+  .layout{display:flex;gap:14px;padding:16px;height:calc(100vh - 62px);overflow:hidden}
+  .main-card{flex:1;background:var(--card);border-radius:18px;padding:22px;display:flex;flex-direction:column;gap:14px;overflow:hidden;min-width:0;box-shadow:0 4px 24px var(--shadow)}
+  .month-header{display:flex;align-items:baseline;gap:20px;flex-wrap:wrap}
+  .month-name{font-size:42px;font-weight:900;color:var(--text1);letter-spacing:-1.5px}
+  .month-quote{font-size:12.5px;color:var(--text3);font-style:italic;flex:1}
+  .chart-card{background:var(--card2);border-radius:12px;padding:14px 18px;box-shadow:0 1px 6px var(--shadow)}
+  .chart-label{font-size:12px;color:var(--text3);font-weight:700;margin-bottom:8px}
+  .chart-wrap{position:relative;height:140px}
+  .grid-area{display:flex;flex:1;overflow:hidden;background:var(--card2);border-radius:12px;box-shadow:0 1px 6px var(--shadow)}
+  .habit-labels-col{width:170px;min-width:170px;border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;flex-shrink:0}
+  .habits-col-header{display:flex;justify-content:space-between;align-items:center;padding:0 14px;border-bottom:1px solid var(--border);background:var(--week-bg);flex-shrink:0}
+  .habits-col-title{font-weight:800;font-size:15px;color:var(--text1)}
+  .edit-btn{font-size:13px;color:var(--accent2);cursor:pointer;font-weight:600}
+  .label-spacer{flex-shrink:0;border-bottom:1px solid var(--border2);background:var(--daynum-bg)}
+  .label-spacer2{flex-shrink:0;border-bottom:1px solid var(--border);background:var(--daynum-bg)}
+  .habit-label-row{font-size:15px;color:var(--text2);font-weight:600;padding:0 14px;border-bottom:1px solid var(--border2);display:flex;align-items:center;flex-shrink:0}
+  .pct-label-row{font-size:11px;color:var(--text3);font-weight:600;padding:0 14px;display:flex;align-items:center;flex-shrink:0;background:var(--pct-bg);border-bottom:1px solid var(--border2)}
+  .dayrepeat-label-row{font-size:11px;color:var(--text3);padding:0 14px;display:flex;align-items:center;flex-shrink:0;background:var(--daynum-bg)}
+  .grid-scroll{flex:1;overflow-x:auto;overflow-y:hidden}
+  .grid-table{border-collapse:collapse;table-layout:fixed}
+  .week-group-cell{text-align:center;font-size:12px;font-weight:700;color:var(--accent);padding:0 14px;border-right:2px solid var(--border);border-bottom:1px solid var(--border);background:var(--week-bg);white-space:nowrap}
+  .week-group-cell:last-child{border-right:none}
+  .dow-cell{width:38px;text-align:center;font-size:11px;font-weight:700;color:var(--text3);padding:4px 0;border-bottom:1px solid var(--border2);border-right:1px solid var(--border2);background:var(--daynum-bg)}
+  .dow-cell.we{border-right:2px solid var(--border)}
+  .dow-cell.weekend{color:var(--accent2);opacity:0.75}
+  .day-num-cell{width:38px;text-align:center;font-size:13px;font-weight:700;color:var(--text2);padding:5px 0;border-bottom:1px solid var(--border);border-right:1px solid var(--border2);background:var(--daynum-bg)}
+  .day-num-cell.we{border-right:2px solid var(--border)}
+  .habit-cb-row td{border-bottom:1px solid var(--border2);border-right:1px solid var(--border2)}
+  .habit-cb-row td.we{border-right:2px solid var(--border)}
+  .cb-cell{width:38px;text-align:center;padding:0}
+  .cb-box{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1.5px solid var(--cb-border);border-radius:6px;background:var(--cb-bg);cursor:pointer;position:relative;transition:all 0.15s ease;vertical-align:middle}
+  .cb-box:hover{border-color:var(--accent)}
+  .cb-box.checked{background:var(--accent);border-color:var(--accent2);box-shadow:0 0 0 4px rgba(58,126,216,0.22),0 0 10px rgba(58,126,216,0.3)}
+  .cb-box.checked::after{content:'';position:absolute;left:6px;top:3px;width:7px;height:11px;border:2.5px solid white;border-top:none;border-left:none;transform:rotate(45deg)}
+  .pct-row td{background:var(--pct-bg);border-right:1px solid var(--border2);border-bottom:1px solid var(--border2)}
+  .pct-row td.we{border-right:2px solid var(--border)}
+  .pct-badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 4px;border-radius:10px;min-width:32px;text-align:center}
+  .dayrepeat-row td{background:var(--daynum-bg);border-right:1px solid var(--border2)}
+  .dayrepeat-row td.we{border-right:2px solid var(--border)}
+  .dayrepeat-cell{width:38px;text-align:center;font-size:11px;color:var(--text3);padding:4px 0}
+  .month-tabs-wrap{background:var(--card2);border-radius:10px;padding:0 6px;overflow-x:auto;white-space:nowrap;flex-shrink:0}
+  .month-tabs{display:flex}
+  .month-tab{padding:9px 10px;font-size:12px;color:var(--text3);cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;display:inline-block;font-weight:600}
+  .month-tab.active{color:var(--accent2);border-bottom-color:var(--accent)}
+  .right-card{width:310px;min-width:310px;background:var(--card);border-radius:18px;padding:20px 22px;display:flex;flex-direction:column;overflow-y:auto;box-shadow:0 4px 24px var(--shadow)}
+  .score-title{font-size:13px;color:var(--text3);font-weight:700;margin-bottom:10px;text-align:center;letter-spacing:0.06em;text-transform:uppercase}
+  .score-ring-wrap{position:relative;width:175px;height:175px;margin:0 auto 18px}
+  .score-ring-wrap canvas{width:175px;height:175px}
+  .score-text{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:28px;font-weight:900;color:var(--text1)}
+  .prog-title{font-size:13px;font-weight:800;color:var(--text2);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px}
+  .prog-item{margin-bottom:12px}
+  .prog-row{display:flex;justify-content:space-between;margin-bottom:5px;align-items:baseline}
+  .prog-name{font-size:14px;color:var(--text2);font-weight:600}
+  .prog-bg{height:10px;background:var(--ring-track);border-radius:5px;overflow:hidden}
+  .prog-fill{height:10px;border-radius:5px;background:var(--accent);transition:width 0.3s}
+  .prog-divider{border:none;border-top:1px solid var(--border);margin:10px 0}
+  .prog-avg{display:flex;justify-content:space-between;align-items:baseline}
+  .modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.55);display:flex;align-items:center;justify-content:center;z-index:300}
+  .modal{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:26px;width:360px;box-shadow:0 20px 60px rgba(0,0,0,0.4)}
+  .modal-title{font-size:17px;font-weight:800;color:var(--text1);margin-bottom:18px}
+  .modal-list{list-style:none;margin-bottom:16px}
+  .modal-item{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border2)}
+  .modal-item span{font-size:15px;color:var(--text2)}
+  .remove-btn{color:#e05050;font-size:16px;cursor:pointer;border:none;background:none;padding:0 6px}
+  .modal-add{display:flex;gap:8px;margin-bottom:16px}
+  .modal-add input{flex:1;border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;font-size:15px;outline:none;background:var(--card2);color:var(--text1)}
+  .modal-add input:focus{border-color:var(--accent)}
+  .modal-add button{background:var(--accent);color:white;border:none;border-radius:8px;padding:9px 16px;font-size:15px;cursor:pointer;font-weight:700}
+  .modal-close{width:100%;background:var(--card2);border:1.5px solid var(--border);border-radius:10px;padding:11px;font-size:15px;cursor:pointer;color:var(--text2);font-weight:600}
 </style>
 </head>
 <body class="dark">
+
+<!-- LOGIN -->
 <div id="loginScreen" class="login-screen">
   <div class="login-card">
-    <div class="login-icon">
-      <svg width="28" height="28" viewBox="0 0 20 20"><rect x="2" y="2" width="7" height="7" rx="1.5"/><rect x="11" y="2" width="7" height="7" rx="1.5"/><rect x="2" y="11" width="7" height="7" rx="1.5"/><rect x="11" y="11" width="7" height="7" rx="1.5"/></svg>
-    </div>
+    <div class="login-icon"><svg width="28" height="28" viewBox="0 0 20 20"><rect x="2" y="2" width="7" height="7" rx="1.5"/><rect x="11" y="2" width="7" height="7" rx="1.5"/><rect x="2" y="11" width="7" height="7" rx="1.5"/><rect x="11" y="11" width="7" height="7" rx="1.5"/></svg></div>
     <div class="login-title">Consistency Dashboard</div>
     <div class="login-sub">Track your habits. Build your discipline.</div>
     <button class="google-btn" id="googleSignInBtn">
@@ -213,16 +145,19 @@
       </svg>
       Sign in with Google
     </button>
-    <div class="login-loading" id="loginStatus"></div>
+    <div class="login-status" id="loginStatus"></div>
   </div>
 </div>
 
-<div id="app" style="display:none;"></div>
+<!-- APP -->
+<div id="app" style="display:none;height:100%;"></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+import { Chart, registerables } from "https://esm.sh/chart.js@4.4.1";
+Chart.register(...registerables);
 
 const firebaseConfig = {
   apiKey: "AIzaSyA0CtiVaGlKJdtootKlwOi2DsVH_aLF-rw",
@@ -230,10 +165,8 @@ const firebaseConfig = {
   projectId: "habit-tracker-db8f0",
   storageBucket: "habit-tracker-db8f0.firebasestorage.app",
   messagingSenderId: "106010285749",
-  appId: "1:106010285749:web:878f57e4f67e87c58b50fc",
-  measurementId: "G-925XVB3K5Y"
+  appId: "1:106010285749:web:878f57e4f67e87c58b50fc"
 };
-
 const firebaseApp = initializeApp(firebaseConfig);
 const auth = getAuth(firebaseApp);
 const db = getFirestore(firebaseApp);
@@ -255,84 +188,197 @@ const QUOTES=[
   '"Be stronger than your strongest excuse." - Anonymous'
 ];
 const DEF_HABITS=['Wake up 7:30','Eat Meal Prep','Run','5 min music','5 min photos','5 Min Reading','No kush','No corn','Bed by 11PM'];
-const DOW_ABBR=['M','T','W','Th','F','Sa','Su'];
-function jsToMon(jsDay){ return (jsDay+6)%7; }
-function getDOWLabel(y,m,d){ return DOW_ABBR[jsToMon(new Date(y,m,d).getDay())]; }
-function isWeekend(y,m,d){ return jsToMon(new Date(y,m,d).getDay())>=5; }
-function getDays(m,y){ return new Date(y,m+1,0).getDate(); }
-function buildWeeks(m,y){
-  const days=getDays(m,y),weeks=[];let s=1;
-  while(s<=days){ const dow=jsToMon(new Date(y,m,s).getDay()),e=Math.min(s+(6-dow),days);weeks.push({s,e});s=e+1; }
-  return weeks;
-}
+const DOW=['M','T','W','Th','F','Sa','Su'];
+const WEEK_H=28,DOW_H=24,DAYNUM_H=28,ROW_H=34,PCT_H=28,DR_H=24;
+
+function toMon(jsDay){return(jsDay+6)%7;}
+function getDOW(y,m,d){return DOW[toMon(new Date(y,m,d).getDay())];}
+function isWE(y,m,d){return toMon(new Date(y,m,d).getDay())>=5;}
+function getDays(m,y){return new Date(y,m+1,0).getDate();}
+function buildWeeks(m,y){const days=getDays(m,y),w=[];let s=1;while(s<=days){const dow=toMon(new Date(y,m,s).getDay()),e=Math.min(s+(6-dow),days);w.push({s,e});s=e+1;}return w;}
 
 const today=new Date();
-let S={
+const S={
   m:today.getMonth(),y:today.getFullYear(),
-  habits:[...DEF_HABITS],
-  checks:{},
-  dark:true,
-  showM:false,nH:'',
-  user:null,
-  syncing:false
+  habits:[...DEF_HABITS],checks:{},dark:true,
+  showM:false,nH:'',user:null
 };
 
-let unsubSnapshot=null;
-let saveTimeout=null;
+let saveTimer=null;
 let LC=null,RC=null;
 
-function applyTheme(){ document.body.className=S.dark?'dark':'light'; }
-applyTheme();
+function applyTheme(){document.body.className=S.dark?'dark':'light';}
 
-// ── FIRESTORE ──
-function userDoc(uid){ return doc(db,'users',uid,'data','main'); }
+function userDoc(){return doc(db,'users',S.user.uid,'data','main');}
 
-async function loadFromFirestore(uid){
-  try {
-    const snap = await getDoc(userDoc(uid));
+async function loadData(){
+  try{
+    const snap=await getDoc(userDoc());
     if(snap.exists()){
       const d=snap.data();
-      if(d.habits) S.habits=d.habits;
-      if(d.checks) S.checks=d.checks;
-      if(d.dark!==undefined) S.dark=d.dark;
+      if(d.habits)S.habits=d.habits;
+      if(d.checks)S.checks=d.checks;
+      if(d.dark!==undefined)S.dark=d.dark;
       applyTheme();
     }
-  } catch(e){ console.error('Load error',e); }
+  }catch(e){console.error(e);}
 }
 
-function saveToFirestore(){
-  if(!S.user) return;
-  clearTimeout(saveTimeout);
-  saveTimeout=setTimeout(async()=>{
-    try {
-      await setDoc(userDoc(S.user.uid),{
-        habits:S.habits,
-        checks:S.checks,
-        dark:S.dark,
-        updatedAt:Date.now()
-      });
-    } catch(e){ console.error('Save error',e); }
-  },800);
+function saveData(){
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(async()=>{
+    if(!S.user)return;
+    try{await setDoc(userDoc(),{habits:S.habits,checks:S.checks,dark:S.dark,ts:Date.now()});}
+    catch(e){console.error(e);}
+  },600);
 }
 
-// ── AUTH ──
-document.getElementById('googleSignInBtn').addEventListener('click', async()=>{
-  document.getElementById('loginStatus').textContent='Signing in...';
-  try {
-    const provider=new GoogleAuthProvider();
-    await signInWithPopup(auth,provider);
-  } catch(e){
-    document.getElementById('loginStatus').textContent='Sign-in failed. Please try again.';
-    console.error(e);
+function ck(hi,d){return`${hi}_${d}_${S.m}_${S.y}`;}
+function dayPct(d){if(!S.habits.length)return 0;let c=0;S.habits.forEach((_,i)=>{if(S.checks[ck(i,d)])c++;});return Math.round(c/S.habits.length*100);}
+function habitPct(hi){const days=getDays(S.m,S.y);let c=0;for(let d=1;d<=days;d++)if(S.checks[ck(hi,d)])c++;return Math.round(c/days*100);}
+function overall(){if(!S.habits.length)return 0;const days=getDays(S.m,S.y);let t=0,f=0;S.habits.forEach((_,i)=>{for(let d=1;d<=days;d++){t++;if(S.checks[ck(i,d)])f++;}});return t===0?0:parseFloat((f/t*100).toFixed(1));}
+
+function ptc(p){const t=p/100;if(S.dark){return`rgb(${Math.round(58+t*32)},${Math.round(88+t*92)},${Math.round(136+t*112)})`;}return`rgb(${Math.round(138-t*108)},${Math.round(170-t*70)},${Math.round(200+t*20)})`;}
+function pbg(p){return`rgba(58,126,216,${0.07+p/100*0.32})`;}
+
+function render(){
+  const days=getDays(S.m,S.y),ov=overall(),wks=buildWeeks(S.m,S.y),q=QUOTES[S.m%QUOTES.length];
+  const weMap={};wks.forEach(w=>{weMap[w.e]=true;});
+  const xL=Array.from({length:days},(_,i)=>{const d=i+1;return(d===1||d%5===0)?String(d):'';});
+  const isDark=S.dark;
+  const cL='#3a7ed8',cF=isDark?'rgba(58,126,216,0.12)':'rgba(58,126,216,0.09)';
+  const cG=isDark?'#1e2d3e':'#e0eaf6',cT=isDark?'#3a5878':'#8aaac8';
+  const rT=isDark?'#1a2e44':'#ddeeff';
+  const photo=S.user?.photoURL||'';
+  const email=S.user?.email||'';
+
+  document.getElementById('app').innerHTML=`
+<nav class="nav">
+  <div style="display:flex;align-items:center;">
+    <div class="nav-icon"><svg width="22" height="22" viewBox="0 0 20 20"><rect x="2" y="2" width="7" height="7" rx="1.5"/><rect x="11" y="2" width="7" height="7" rx="1.5"/><rect x="2" y="11" width="7" height="7" rx="1.5"/><rect x="11" y="11" width="7" height="7" rx="1.5"/></svg></div>
+    <div class="nav-brand"><div class="sub">THE</div><div class="main">CONSISTENCY DASHBOARD</div></div>
+  </div>
+  <div class="nav-right">
+    <div class="toggle-wrap">
+      <span style="font-size:14px;">${isDark?'🌙':'☀️'}</span>
+      <div class="toggle" id="themeToggle"><div class="toggle-knob"></div></div>
+      <span class="toggle-label">${isDark?'Dark':'Light'}</span>
+    </div>
+    ${photo?`<img src="${photo}" class="nav-avatar" alt="">`:''}
+    <span class="nav-email">${email}</span>
+    <button class="nav-signout" id="signOutBtn">Sign out</button>
+  </div>
+</nav>
+<div class="layout">
+  <div class="main-card">
+    <div class="month-header">
+      <div class="month-name">${MONTHS[S.m].toUpperCase()}</div>
+      <div class="month-quote">${q}</div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-label">Daily Progress</div>
+      <div class="chart-wrap"><canvas id="LC"></canvas></div>
+    </div>
+    <div class="grid-area">
+      <div class="habit-labels-col">
+        <div class="habits-col-header" style="height:${WEEK_H}px;"><span class="habits-col-title">Habits</span><span class="edit-btn" id="editBtn">Edit</span></div>
+        <div class="label-spacer" style="height:${DOW_H}px;"></div>
+        <div class="label-spacer2" style="height:${DAYNUM_H}px;"></div>
+        ${S.habits.map(h=>`<div class="habit-label-row" style="height:${ROW_H}px;">${h}</div>`).join('')}
+        <div class="pct-label-row" style="height:${PCT_H}px;">% done</div>
+        <div class="dayrepeat-label-row" style="height:${DR_H}px;"></div>
+      </div>
+      <div class="grid-scroll">
+        <table class="grid-table">
+          <thead>
+            <tr>${wks.map((w,wi)=>`<td colspan="${w.e-w.s+1}" class="week-group-cell" style="height:${WEEK_H}px;">Week ${wi+1}</td>`).join('')}</tr>
+            <tr>${Array.from({length:days},(_,i)=>{const d=i+1,we=weMap[d]?' we':'',wknd=isWE(S.y,S.m,d)?' weekend':'';return`<td class="dow-cell${we}${wknd}" style="height:${DOW_H}px;">${getDOW(S.y,S.m,d)}</td>`;}).join('')}</tr>
+            <tr>${Array.from({length:days},(_,i)=>{const d=i+1,we=weMap[d]?' we':'';return`<td class="day-num-cell${we}" style="height:${DAYNUM_H}px;">${d}</td>`;}).join('')}</tr>
+          </thead>
+          <tbody>
+            ${S.habits.map((h,hi)=>`<tr class="habit-cb-row" style="height:${ROW_H}px;">${Array.from({length:days},(_,di)=>{const d=di+1,chk=!!S.checks[ck(hi,d)],we=weMap[d]?' we':'';return`<td class="cb-cell${we}"><span class="cb-box${chk?' checked':''}" data-hi="${hi}" data-day="${d}"></span></td>`;}).join('')}</tr>`).join('')}
+            <tr class="pct-row" style="height:${PCT_H}px;">${Array.from({length:days},(_,di)=>{const d=di+1,p=dayPct(d),we=weMap[d]?' we':'';return`<td class="${we}" style="text-align:center;padding:3px 1px;"><span class="pct-badge" style="color:${ptc(p)};background:${pbg(p)};">${p}%</span></td>`;}).join('')}</tr>
+            <tr class="dayrepeat-row" style="height:${DR_H}px;">${Array.from({length:days},(_,di)=>{const d=di+1,we=weMap[d]?' we':'';return`<td class="dayrepeat-cell${we}">${d}</td>`;}).join('')}</tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="month-tabs-wrap">
+      <div class="month-tabs">${MONTHS.map((mn,i)=>`<div class="month-tab${i===S.m?' active':''}" data-mi="${i}">${MONTH_SHORT[i]}</div>`).join('')}</div>
+    </div>
+  </div>
+  <div class="right-card">
+    <div class="score-title">Discipline Score</div>
+    <div class="score-ring-wrap"><canvas id="RC" width="175" height="175"></canvas><div class="score-text">${ov}%</div></div>
+    <div class="prog-title">Progress</div>
+    ${S.habits.map((h,i)=>{const p=habitPct(i),col=ptc(p);return`<div class="prog-item"><div class="prog-row"><span class="prog-name">${h}</span><span style="font-size:14px;font-weight:${p>0?800:500};color:${col};">${p}%</span></div><div class="prog-bg"><div class="prog-fill" style="width:${p}%;opacity:${0.45+p/100*0.55};"></div></div></div>`;}).join('')}
+    <hr class="prog-divider">
+    <div class="prog-avg"><span style="font-size:14px;color:var(--text3);font-weight:600;">Average</span><span style="font-size:15px;font-weight:800;color:${ptc(ov)};">${ov}%</span></div>
+  </div>
+</div>
+${S.showM?`<div class="modal-overlay" id="modalOverlay"><div class="modal">
+  <div class="modal-title">Edit Habits</div>
+  <ul class="modal-list">${S.habits.map((h,i)=>`<li class="modal-item"><span>${h}</span><button class="remove-btn" data-ri="${i}">&#x2715;</button></li>`).join('')}</ul>
+  <div class="modal-add"><input id="nHI" placeholder="Add new habit..." value="${S.nH}"><button id="addHabitBtn">Add</button></div>
+  <button class="modal-close" id="closeModalBtn">Done</button>
+</div></div>`:''}
+  `;
+
+  // Charts
+  const lc=document.getElementById('LC');
+  if(lc){if(LC)LC.destroy();LC=new Chart(lc,{type:'line',data:{labels:xL,datasets:[{data:Array.from({length:days},(_,i)=>dayPct(i+1)),borderColor:cL,backgroundColor:cF,fill:true,tension:0,pointRadius:0,pointHoverRadius:0,borderWidth:2.5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{enabled:false}},scales:{y:{min:0,max:100,ticks:{callback:v=>v+'%',font:{size:11},color:cT,stepSize:25},grid:{color:cG},border:{display:false}},x:{ticks:{font:{size:11},color:cT,maxRotation:0,autoSkip:false,callback:(val,idx)=>xL[idx]},grid:{display:false},border:{display:false}}}}});}
+  const rc=document.getElementById('RC');
+  if(rc){if(RC)RC.destroy();RC=new Chart(rc,{type:'doughnut',data:{datasets:[{data:[ov||0.5,100-(ov||0.5)],backgroundColor:[cL,rT],borderWidth:0}]},options:{cutout:'76%',plugins:{legend:{display:false},tooltip:{enabled:false}}}});}
+}
+
+// ── GLOBAL EVENT DELEGATION — attached once, never re-attached ──
+document.getElementById('app').addEventListener('click', e => {
+  // Checkbox toggle
+  const cb = e.target.closest('.cb-box');
+  if(cb){
+    const hi=parseInt(cb.dataset.hi),d=parseInt(cb.dataset.day),k=ck(hi,d);
+    if(S.checks[k])delete S.checks[k];else S.checks[k]=true;
+    saveData();render();return;
   }
+  // Theme toggle
+  if(e.target.closest('#themeToggle')){S.dark=!S.dark;applyTheme();saveData();render();return;}
+  // Sign out
+  if(e.target.closest('#signOutBtn')){signOut(auth);return;}
+  // Month tab
+  const tab=e.target.closest('.month-tab');
+  if(tab){S.m=parseInt(tab.dataset.mi);render();return;}
+  // Edit habits
+  if(e.target.closest('#editBtn')){S.showM=true;render();return;}
+  // Close modal
+  if(e.target.closest('#closeModalBtn')||e.target.id==='modalOverlay'){S.showM=false;render();return;}
+  // Add habit
+  if(e.target.closest('#addHabitBtn')){
+    const inp=document.getElementById('nHI');
+    if(inp&&inp.value.trim()){S.habits.push(inp.value.trim());S.nH='';saveData();render();}return;
+  }
+  // Remove habit
+  const rb=e.target.closest('.remove-btn');
+  if(rb){S.habits.splice(parseInt(rb.dataset.ri),1);saveData();render();return;}
 });
 
-onAuthStateChanged(auth, async(user)=>{
+document.getElementById('app').addEventListener('input', e => {
+  if(e.target.id==='nHI') S.nH=e.target.value;
+});
+
+// Sign in
+document.getElementById('googleSignInBtn').addEventListener('click', async()=>{
+  document.getElementById('loginStatus').textContent='Signing in...';
+  try{await signInWithPopup(auth,new GoogleAuthProvider());}
+  catch(e){document.getElementById('loginStatus').textContent='Sign-in failed. Try again.';console.error(e);}
+});
+
+// Auth state
+onAuthStateChanged(auth, async user=>{
   if(user){
     S.user=user;
     document.getElementById('loginScreen').style.display='none';
     document.getElementById('app').style.display='block';
-    await loadFromFirestore(user.uid);
+    await loadData();
     render();
   } else {
     S.user=null;
@@ -340,141 +386,6 @@ onAuthStateChanged(auth, async(user)=>{
     document.getElementById('app').style.display='none';
   }
 });
-
-// ── HELPERS ──
-function ck(hi,d){ return `${hi}_${d}_${S.m}_${S.y}`; }
-function dayPct(d){ if(!S.habits.length)return 0;let c=0;S.habits.forEach((_,i)=>{if(S.checks[ck(i,d)])c++;});return Math.round(c/S.habits.length*100); }
-function habitPct(hi){ const days=getDays(S.m,S.y);let c=0;for(let d=1;d<=days;d++)if(S.checks[ck(hi,d)])c++;return Math.round(c/days*100); }
-function overall(){ if(!S.habits.length)return 0;const days=getDays(S.m,S.y);let tot=0,fil=0;S.habits.forEach((_,i)=>{for(let d=1;d<=days;d++){tot++;if(S.checks[ck(i,d)])fil++;}});return tot===0?0:parseFloat((fil/tot*100).toFixed(1)); }
-
-function pctTextColor(p){
-  const t=p/100;
-  if(S.dark){ const r=Math.round(58+t*32),g=Math.round(88+t*92),b=Math.round(136+t*112);return`rgb(${r},${g},${b})`; }
-  else { const r=Math.round(138-t*108),g=Math.round(170-t*70),b=Math.round(200+t*20);return`rgb(${r},${g},${b})`; }
-}
-function pctBadgeBg(p){ return`rgba(58,126,216,${0.07+p/100*0.32})`; }
-
-const WEEK_H=28,DOW_H=24,DAYNUM_H=28,ROW_H=34,PCT_H=28,DAYREPEAT_H=24;
-
-function render(){
-  const days=getDays(S.m,S.y),ov=overall(),wks=buildWeeks(S.m,S.y),q=QUOTES[S.m%QUOTES.length];
-  const weMap={};wks.forEach(w=>{weMap[w.e]=true;});
-  const xLabels=Array.from({length:days},(_,i)=>{const d=i+1;return(d===1||d%5===0)?String(d):'';});
-  const isDark=S.dark;
-  const chartLine='#3a7ed8',chartFill=isDark?'rgba(58,126,216,0.12)':'rgba(58,126,216,0.09)';
-  const chartGrid=isDark?'#1e2d3e':'#e0eaf6',chartTick=isDark?'#3a5878':'#8aaac8';
-  const ringTrack=isDark?'#1a2e44':'#ddeeff';
-  const userName=S.user?.displayName?.split(' ')[0]||'';
-  const userPhoto=S.user?.photoURL||'';
-
-  document.getElementById('app').innerHTML=`
-  <nav class="nav">
-    <div style="display:flex;align-items:center;">
-      <div class="nav-icon"><svg width="22" height="22" viewBox="0 0 20 20"><rect x="2" y="2" width="7" height="7" rx="1.5"/><rect x="11" y="2" width="7" height="7" rx="1.5"/><rect x="2" y="11" width="7" height="7" rx="1.5"/><rect x="11" y="11" width="7" height="7" rx="1.5"/></svg></div>
-      <div class="nav-brand"><div class="sub">THE</div><div class="main">CONSISTENCY DASHBOARD</div></div>
-    </div>
-    <div class="nav-right">
-      <div class="toggle-wrap">
-        <span style="font-size:14px;">${isDark?'🌙':'☀️'}</span>
-        <div class="toggle" id="themeToggle"><div class="toggle-knob"></div></div>
-        <span class="toggle-label">${isDark?'Dark':'Light'}</span>
-      </div>
-      ${userPhoto?`<img src="${userPhoto}" class="nav-avatar" alt="${userName}">`:''}
-      <span class="nav-email">${S.user?.email||''}</span>
-      <button class="nav-signout" id="signOutBtn">Sign out</button>
-    </div>
-  </nav>
-
-  <div class="layout">
-    <div class="main-card">
-      <div class="month-header">
-        <div class="month-name">${MONTHS[S.m].toUpperCase()}</div>
-        <div class="month-quote">${q}</div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-label">Daily Progress</div>
-        <div class="chart-wrap"><canvas id="LC"></canvas></div>
-      </div>
-      <div class="grid-area">
-        <div class="habit-labels-col">
-          <div class="habits-col-header" style="height:${WEEK_H}px;">
-            <span class="habits-col-title">Habits</span>
-            <span class="edit-btn" id="eH">Edit</span>
-          </div>
-          <div class="label-spacer" style="height:${DOW_H}px;"></div>
-          <div class="label-spacer2" style="height:${DAYNUM_H}px;"></div>
-          ${S.habits.map(h=>`<div class="habit-label-row" style="height:${ROW_H}px;">${h}</div>`).join('')}
-          <div class="pct-label-row" style="height:${PCT_H}px;">% done</div>
-          <div class="dayrepeat-label-row" style="height:${DAYREPEAT_H}px;"></div>
-        </div>
-        <div class="grid-scroll">
-          <table class="grid-table">
-            <thead>
-              <tr>${wks.map((w,wi)=>`<td colspan="${w.e-w.s+1}" class="week-group-cell" style="height:${WEEK_H}px;">Week ${wi+1}</td>`).join('')}</tr>
-              <tr>${Array.from({length:days},(_,i)=>{const d=i+1,we=weMap[d]?' we':'',wknd=isWeekend(S.y,S.m,d)?' weekend':'';return`<td class="dow-cell${we}${wknd}" style="height:${DOW_H}px;">${getDOWLabel(S.y,S.m,d)}</td>`;}).join('')}</tr>
-              <tr>${Array.from({length:days},(_,i)=>{const d=i+1,we=weMap[d]?' we':'';return`<td class="day-num-cell${we}" style="height:${DAYNUM_H}px;">${d}</td>`;}).join('')}</tr>
-            </thead>
-            <tbody>
-              ${S.habits.map((h,hi)=>`<tr class="habit-cb-row" style="height:${ROW_H}px;">${Array.from({length:days},(_,di)=>{const d=di+1,isChk=!!S.checks[ck(hi,d)],we=weMap[d]?' we':'';return`<td class="cb-cell${we}"><span class="cb-box${isChk?' checked':''}" data-hi="${hi}" data-day="${d}"></span></td>`;}).join('')}</tr>`).join('')}
-              <tr class="pct-row" style="height:${PCT_H}px;">${Array.from({length:days},(_,di)=>{const d=di+1,p=dayPct(d),we=weMap[d]?' we':'';return`<td class="${we}" style="text-align:center;padding:3px 1px;"><span class="pct-badge" style="color:${pctTextColor(p)};background:${pctBadgeBg(p)};">${p}%</span></td>`;}).join('')}</tr>
-              <tr class="dayrepeat-row" style="height:${DAYREPEAT_H}px;">${Array.from({length:days},(_,di)=>{const d=di+1,we=weMap[d]?' we':'';return`<td class="dayrepeat-cell${we}">${d}</td>`;}).join('')}</tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div class="month-tabs-wrap">
-        <div class="month-tabs">${MONTHS.map((mn,i)=>`<div class="month-tab${i===S.m?' active':''}" data-mi="${i}">${MONTH_SHORT[i]}</div>`).join('')}</div>
-      </div>
-    </div>
-
-    <div class="right-card">
-      <div class="score-title">Discipline Score</div>
-      <div class="score-ring-wrap">
-        <canvas id="RC" width="175" height="175"></canvas>
-        <div class="score-text">${ov}%</div>
-      </div>
-      <div class="prog-title">Progress</div>
-      ${S.habits.map((h,i)=>{const p=habitPct(i),col=pctTextColor(p);return`<div class="prog-item"><div class="prog-row"><span class="prog-name">${h}</span><span style="font-size:14px;font-weight:${p>0?800:500};color:${col};">${p}%</span></div><div class="prog-bg"><div class="prog-fill" style="width:${p}%;opacity:${0.45+p/100*0.55};"></div></div></div>`;}).join('')}
-      <hr class="prog-divider">
-      <div class="prog-avg">
-        <span style="font-size:14px;color:var(--text3);font-weight:600;">Average</span>
-        <span style="font-size:15px;font-weight:800;color:${pctTextColor(ov)};">${ov}%</span>
-      </div>
-    </div>
-  </div>
-
-  ${S.showM?`<div class="modal-overlay" id="mO"><div class="modal">
-    <div class="modal-title">Edit Habits</div>
-    <ul class="modal-list">${S.habits.map((h,i)=>`<li class="modal-item"><span>${h}</span><button class="remove-btn" data-ri="${i}">&#x2715;</button></li>`).join('')}</ul>
-    <div class="modal-add"><input id="nHI" placeholder="Add new habit..." value="${S.nH}"><button id="aHB">Add</button></div>
-    <button class="modal-close" id="cM">Done</button>
-  </div></div>`:''}
-  `;
-
-  // Charts
-  const lc=document.getElementById('LC');
-  if(lc){if(LC)LC.destroy();LC=new Chart(lc,{type:'line',data:{labels:xLabels,datasets:[{data:Array.from({length:days},(_,i)=>dayPct(i+1)),borderColor:chartLine,backgroundColor:chartFill,fill:true,tension:0,pointRadius:0,pointHoverRadius:0,borderWidth:2.5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{enabled:false}},scales:{y:{min:0,max:100,ticks:{callback:v=>v+'%',font:{size:11},color:chartTick,stepSize:25},grid:{color:chartGrid},border:{display:false}},x:{ticks:{font:{size:11},color:chartTick,maxRotation:0,autoSkip:false,callback:(val,idx)=>xLabels[idx]},grid:{display:false},border:{display:false}}}}});}
-  const rc=document.getElementById('RC');
-  if(rc){if(RC)RC.destroy();RC=new Chart(rc,{type:'doughnut',data:{datasets:[{data:[ov||0.5,100-(ov||0.5)],backgroundColor:[chartLine,ringTrack],borderWidth:0}]},options:{cutout:'76%',plugins:{legend:{display:false},tooltip:{enabled:false}}}});}
-
-  // Events
-  document.getElementById('themeToggle').addEventListener('click',()=>{S.dark=!S.dark;applyTheme();saveToFirestore();render();});
-  document.getElementById('signOutBtn').addEventListener('click',()=>signOut(auth));
-  document.querySelectorAll('.cb-box').forEach(el=>{
-    el.addEventListener('click',()=>{
-      const hi=parseInt(el.dataset.hi),d=parseInt(el.dataset.day),k=ck(hi,d);
-      if(S.checks[k])delete S.checks[k];else S.checks[k]=true;
-      saveToFirestore();render();
-    });
-  });
-  document.querySelectorAll('.month-tab').forEach(el=>el.addEventListener('click',()=>{S.m=parseInt(el.dataset.mi);render();}));
-  const eH=document.getElementById('eH');if(eH)eH.addEventListener('click',()=>{S.showM=true;render();});
-  const cM=document.getElementById('cM');if(cM)cM.addEventListener('click',()=>{S.showM=false;render();});
-  const nHI=document.getElementById('nHI');if(nHI){nHI.addEventListener('input',e=>{S.nH=e.target.value;});nHI.focus();}
-  const aHB=document.getElementById('aHB');if(aHB)aHB.addEventListener('click',()=>{if(S.nH.trim()){S.habits.push(S.nH.trim());S.nH='';saveToFirestore();render();}});
-  document.querySelectorAll('.remove-btn[data-ri]').forEach(el=>el.addEventListener('click',()=>{S.habits.splice(parseInt(el.dataset.ri),1);saveToFirestore();render();}));
-  const mO=document.getElementById('mO');if(mO)mO.addEventListener('click',e=>{if(e.target===mO){S.showM=false;render();}});
-}
 </script>
 </body>
 </html>
