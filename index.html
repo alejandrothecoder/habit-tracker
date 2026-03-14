@@ -126,6 +126,14 @@
   .modal-add input:focus{border-color:var(--accent)}
   .modal-add button{background:var(--accent);color:white;border:none;border-radius:8px;padding:9px 16px;font-size:15px;cursor:pointer;font-weight:700}
   .modal-close{width:100%;background:var(--card2);border:1.5px solid var(--border);border-radius:10px;padding:11px;font-size:15px;cursor:pointer;color:var(--text2);font-weight:600}
+  .drag-item{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border2);cursor:default;border-radius:6px;transition:background 0.1s;}
+  .drag-item.dragging{opacity:0.4;}
+  .drag-item.drag-over{background:var(--week-bg);}
+  .drag-handle{cursor:grab;padding:4px 8px 4px 0;color:var(--text3);display:flex;flex-direction:column;gap:3px;flex-shrink:0;}
+  .drag-handle:active{cursor:grabbing;}
+  .drag-handle span{display:block;width:16px;height:2px;background:currentColor;border-radius:2px;}
+  .drag-item-name{font-size:15px;color:var(--text2);flex:1;}
+
 </style>
 </head>
 <body class="dark">
@@ -318,7 +326,14 @@ function render(){
 </div>
 ${S.showM?`<div class="modal-overlay" id="modalOverlay"><div class="modal">
   <div class="modal-title">Edit Habits</div>
-  <ul class="modal-list">${S.habits.map((h,i)=>`<li class="modal-item"><span>${h}</span><button class="remove-btn" data-ri="${i}">&#x2715;</button></li>`).join('')}</ul>
+  <ul class="modal-list" id="dragList">
+    ${S.habits.map((h,i)=>`
+    <li class="drag-item" draggable="true" data-idx="${i}">
+      <div class="drag-handle" title="Drag to reorder"><span></span><span></span><span></span></div>
+      <span class="drag-item-name">${h}</span>
+      <button class="remove-btn" data-ri="${i}">&#x2715;</button>
+    </li>`).join('')}
+  </ul>
   <div class="modal-add"><input id="nHI" placeholder="Add new habit..." value="${S.nH}"><button id="addHabitBtn">Add</button></div>
   <button class="modal-close" id="closeModalBtn">Done</button>
 </div></div>`:''}
@@ -385,6 +400,40 @@ onAuthStateChanged(auth, async user=>{
     document.getElementById('loginScreen').style.display='flex';
     document.getElementById('app').style.display='none';
   }
+});
+
+// ── DRAG TO REORDER ──
+let dragSrcIdx=null;
+
+document.getElementById('app').addEventListener('dragstart', e=>{
+  const item=e.target.closest('.drag-item');
+  if(!item)return;
+  dragSrcIdx=parseInt(item.dataset.idx);
+  setTimeout(()=>item.classList.add('dragging'),0);
+});
+document.getElementById('app').addEventListener('dragend', e=>{
+  const item=e.target.closest('.drag-item');
+  if(item)item.classList.remove('dragging');
+  document.querySelectorAll('.drag-item').forEach(el=>el.classList.remove('drag-over'));
+});
+document.getElementById('app').addEventListener('dragover', e=>{
+  e.preventDefault();
+  const item=e.target.closest('.drag-item');
+  if(!item)return;
+  document.querySelectorAll('.drag-item').forEach(el=>el.classList.remove('drag-over'));
+  item.classList.add('drag-over');
+});
+document.getElementById('app').addEventListener('drop', e=>{
+  e.preventDefault();
+  const item=e.target.closest('.drag-item');
+  if(!item||dragSrcIdx===null)return;
+  const destIdx=parseInt(item.dataset.idx);
+  if(dragSrcIdx===destIdx)return;
+  // Reorder habits array
+  const moved=S.habits.splice(dragSrcIdx,1)[0];
+  S.habits.splice(destIdx,0,moved);
+  dragSrcIdx=null;
+  saveData();render();
 });
 </script>
 </body>
