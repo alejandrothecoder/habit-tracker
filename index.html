@@ -6,478 +6,292 @@
 <title>The Consistency Dashboard</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Segoe UI', system-ui, sans-serif; background: #eef2f7; color: #222; font-size: 13px; }
-  .app { display: flex; flex-direction: column; min-height: 100vh; }
+  html, body { height: 100%; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #dce8f5; color: #222; font-size: 13px; }
 
-  .nav { background: white; border-bottom: 1px solid #dde3ec; padding: 0 20px; display: flex; align-items: center; gap: 20px; height: 52px; }
-  .nav-logo { display: flex; align-items: center; gap: 8px; }
-  .nav-icon { width: 32px; height: 32px; background: #3b4a6b; border-radius: 6px; display: flex; align-items: center; justify-content: center; }
+  .nav {
+    background: #e8f0f8;
+    border-bottom: 1px solid #c8d8e8;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    height: 58px;
+    gap: 16px;
+  }
+  .nav-logo { display: flex; align-items: center; gap: 10px; }
+  .nav-icon { width: 38px; height: 38px; background: #4a5a7a; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
   .nav-icon svg { fill: white; }
-  .nav-title { font-size: 11px; font-weight: 700; color: #3b4a6b; letter-spacing: 0.05em; line-height: 1.2; }
-  .nav-title span { display: block; font-size: 14px; letter-spacing: 0; }
-  .nav-links { margin-left: auto; display: flex; align-items: center; gap: 4px; }
-  .nav-btn { padding: 6px 14px; border-radius: 20px; border: 1px solid #dde3ec; background: white; font-size: 12px; cursor: pointer; color: #444; }
-  .nav-btn.active { background: #3b4a6b; color: white; border-color: #3b4a6b; }
-  .nav-user { font-size: 12px; color: #888; margin-left: 12px; }
-  .nav-logout { font-size: 12px; color: #444; cursor: pointer; margin-left: 8px; font-weight: 500; }
+  .nav-brand { line-height: 1.2; }
+  .nav-brand .sub { font-size: 10px; font-weight: 600; color: #6a7a9a; letter-spacing: 0.08em; }
+  .nav-brand .main { font-size: 15px; font-weight: 700; color: #2a3a5a; letter-spacing: 0.02em; }
+  .nav-right { margin-left: auto; display: flex; align-items: center; gap: 6px; }
+  .nav-pill { padding: 7px 20px; border-radius: 20px; border: 1.5px solid #b0c4da; background: white; font-size: 13px; cursor: pointer; color: #4a5a7a; font-weight: 500; }
+  .nav-pill.active { border-color: #4a5a7a; color: #2a3a5a; font-weight: 600; }
+  .nav-email { font-size: 12px; color: #7a8aaa; margin-left: 10px; }
+  .nav-logout { font-size: 13px; color: #2a3a5a; cursor: pointer; font-weight: 600; margin-left: 6px; }
 
-  .month-tabs { background: white; border-bottom: 1px solid #dde3ec; padding: 0 20px; display: flex; gap: 0; overflow-x: auto; }
-  .month-tab { padding: 10px 14px; font-size: 12px; color: #888; cursor: pointer; white-space: nowrap; border-bottom: 2px solid transparent; }
-  .month-tab.active { color: #3b4a6b; border-bottom-color: #3b4a6b; font-weight: 600; }
+  .layout { display: flex; gap: 16px; padding: 16px; height: calc(100vh - 58px); overflow: hidden; }
 
-  .main { display: flex; gap: 0; flex: 1; }
-
-  .sidebar { width: 190px; min-width: 190px; background: white; border-right: 1px solid #dde3ec; padding: 16px 12px; display: flex; flex-direction: column; gap: 4px; }
-  .sidebar-section { margin-bottom: 12px; }
-  .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-  .sidebar-title { font-weight: 700; font-size: 14px; color: #222; }
-  .edit-btn { font-size: 11px; color: #5b8dee; cursor: pointer; }
-  .habit-item { padding: 6px 4px; font-size: 13px; color: #333; border-radius: 4px; cursor: pointer; border-bottom: 1px solid #f0f0f0; }
+  .left-col { display: flex; flex-direction: column; gap: 12px; width: 200px; min-width: 200px; }
+  .sidebar-card { background: white; border-radius: 12px; padding: 14px 12px; flex: 1; overflow-y: auto; }
+  .sidebar-section { margin-bottom: 16px; }
+  .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .sidebar-title { font-weight: 700; font-size: 15px; color: #1a2a3a; }
+  .edit-btn { font-size: 12px; color: #5b8dee; cursor: pointer; font-weight: 500; }
+  .habit-item { padding: 7px 2px; font-size: 13px; color: #2a3a5a; border-bottom: 1px solid #f0f4f8; }
   .habit-item:last-child { border-bottom: none; }
 
-  .center { flex: 1; padding: 16px; display: flex; flex-direction: column; gap: 12px; overflow: hidden; }
-  .month-header { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; }
-  .month-name { font-size: 28px; font-weight: 800; color: #2c3e6b; letter-spacing: -0.5px; }
-  .month-quote { font-size: 12px; color: #888; font-style: italic; }
+  .month-tabs-wrap { background: white; border-radius: 12px; padding: 0 6px; overflow-x: auto; white-space: nowrap; }
+  .month-tabs { display: flex; }
+  .month-tab { padding: 9px 8px; font-size: 11px; color: #7a8aaa; cursor: pointer; white-space: nowrap; border-bottom: 2px solid transparent; display: inline-block; }
+  .month-tab.active { color: #2a3a5a; border-bottom-color: #2a3a5a; font-weight: 600; }
 
-  .chart-card { background: white; border-radius: 8px; border: 1px solid #dde3ec; padding: 12px 16px; }
-  .chart-label { font-size: 11px; color: #888; margin-bottom: 6px; font-weight: 600; }
-  .chart-wrap { position: relative; height: 120px; }
+  .main-card { flex: 1; background: white; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 14px; overflow: hidden; min-width: 0; }
+  .month-header { display: flex; align-items: baseline; gap: 20px; flex-wrap: wrap; }
+  .month-name { font-size: 36px; font-weight: 900; color: #1a2a4a; letter-spacing: -1px; }
+  .month-quote { font-size: 11.5px; color: #8a9ab0; font-style: italic; flex: 1; }
+  .chart-label { font-size: 11px; color: #8a9ab0; font-weight: 600; margin-bottom: 4px; }
+  .chart-wrap { position: relative; height: 110px; }
 
-  .grid-card { background: white; border-radius: 8px; border: 1px solid #dde3ec; overflow: auto; }
+  .grid-wrap { flex: 1; overflow: auto; border: 1px solid #e8eef6; border-radius: 8px; }
   .grid-table { border-collapse: collapse; min-width: max-content; }
-  .grid-table th { font-size: 10px; color: #aaa; text-align: center; padding: 4px 0; font-weight: 500; background: white; }
-  .week-header { background: #f5f7fb; text-align: center; font-size: 10px; font-weight: 600; color: #5b8dee; padding: 4px 8px; border-bottom: 1px solid #e8ecf4; }
-  .day-num { width: 28px; height: 22px; text-align: center; font-size: 11px; color: #888; }
-  .habit-cb { width: 28px; height: 28px; text-align: center; }
-  .habit-cb input[type=checkbox] { width: 16px; height: 16px; cursor: pointer; accent-color: #5b8dee; }
-  .pct-cell { width: 28px; text-align: center; font-size: 10px; color: #aaa; }
-  .pct-cell.has-pct { color: #5b8dee; font-weight: 600; }
-  .habit-row-label { font-size: 12px; color: #333; padding: 4px 8px; white-space: nowrap; text-align: left; }
-  .time-row-label { font-size: 11px; color: #666; padding: 4px 8px; white-space: nowrap; }
-  .time-input { width: 26px; font-size: 10px; text-align: center; border: none; background: transparent; color: #444; }
+  .week-group-header { background: #f0f5fc; }
+  .week-group-cell { text-align: center; font-size: 11px; font-weight: 600; color: #5a7aaa; padding: 5px 0; border-right: 2px solid #d0dcec; border-bottom: 1px solid #e0e8f4; }
+  .week-group-cell:last-child { border-right: none; }
+  .day-num-row { background: #f8fafd; }
+  .day-num-cell { width: 30px; text-align: center; font-size: 11px; font-weight: 600; color: #6a7a9a; padding: 4px 0; border-bottom: 1px solid #e8eef6; }
+  .day-num-cell.we { border-right: 2px solid #d0dcec; }
+  .label-cell { width: 130px; min-width: 130px; }
+  .habit-row td { border-bottom: 1px solid #f0f4f8; }
+  .habit-label { font-size: 12px; color: #2a3a5a; padding: 5px 10px; white-space: nowrap; font-weight: 500; }
+  .cb-cell { width: 30px; text-align: center; padding: 3px 0; }
+  .cb-cell.we { border-right: 2px solid #d0dcec; }
+  .cb-cell input[type=checkbox] { width: 16px; height: 16px; cursor: pointer; accent-color: #4a8de8; }
+  .pct-row td { background: #f0f5fc; }
+  .pct-val { width: 30px; text-align: center; font-size: 10px; color: #9ab0cc; padding: 3px 0; font-weight: 500; }
+  .pct-val.has { color: #4a8de8; font-weight: 700; }
+  .pct-val.we { border-right: 2px solid #d0dcec; }
+  .time-divider td { background: #f8fafd; border-top: 2px solid #e0e8f4; border-bottom: 1px solid #e8eef6; height: 4px; }
+  .time-label { font-size: 12px; color: #4a5a7a; padding: 5px 10px; white-space: nowrap; }
+  .time-ic { width: 30px; text-align: center; }
+  .time-ic.we { border-right: 2px solid #d0dcec; }
+  .time-inp { width: 28px; font-size: 10px; text-align: center; border: none; background: transparent; color: #4a5a7a; padding: 4px 0; }
+  .time-inp:focus { outline: none; }
 
-  .right-panel { width: 260px; min-width: 260px; background: white; border-left: 1px solid #dde3ec; padding: 16px; display: flex; flex-direction: column; gap: 16px; overflow-y: auto; }
-  .score-section { text-align: center; }
-  .score-title { font-size: 12px; font-weight: 700; color: #888; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 12px; }
-  .score-ring { position: relative; width: 120px; height: 120px; margin: 0 auto; }
-  .score-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 20px; font-weight: 700; color: #2c3e6b; }
+  .right-card { width: 240px; min-width: 240px; background: white; border-radius: 12px; padding: 18px; display: flex; flex-direction: column; overflow-y: auto; }
+  .score-title { font-size: 13px; color: #8a9ab0; font-weight: 600; margin-bottom: 14px; text-align: center; }
+  .score-ring-wrap { position: relative; width: 150px; height: 150px; margin: 0 auto 20px; }
+  .score-ring-wrap canvas { width: 150px; height: 150px; }
+  .score-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); font-size: 22px; font-weight: 800; color: #1a2a4a; }
+  .prog-title { font-size: 13px; font-weight: 800; color: #1a2a3a; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; }
+  .prog-item { margin-bottom: 9px; }
+  .prog-row { display: flex; justify-content: space-between; margin-bottom: 3px; }
+  .prog-name { font-size: 12px; color: #2a3a5a; font-weight: 500; }
+  .prog-pct { font-size: 12px; color: #7a8aaa; }
+  .prog-bg { height: 7px; background: #e4eaf4; border-radius: 4px; overflow: hidden; }
+  .prog-fill { height: 7px; border-radius: 4px; transition: width 0.3s; }
+  .prog-divider { border: none; border-top: 1px solid #e8eef6; margin: 8px 0; }
+  .prog-avg { display: flex; justify-content: space-between; margin-top: 4px; }
+  .time-avg-title { font-size: 13px; font-weight: 800; color: #1a2a3a; text-transform: uppercase; letter-spacing: 0.06em; margin: 14px 0 8px; }
+  .time-avg-row { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid #f0f4f8; }
+  .time-avg-name { font-size: 12px; color: #2a3a5a; }
+  .time-avg-val { font-size: 12px; color: #7a8aaa; }
 
-  .progress-section { }
-  .progress-title { font-size: 12px; font-weight: 800; color: #222; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px; }
-  .progress-item { margin-bottom: 8px; }
-  .progress-row { display: flex; justify-content: space-between; margin-bottom: 2px; }
-  .progress-name { font-size: 12px; color: #333; }
-  .progress-pct { font-size: 12px; color: #888; }
-  .progress-bar-bg { height: 6px; background: #eef0f5; border-radius: 3px; overflow: hidden; }
-  .progress-bar-fill { height: 6px; background: #5b8dee; border-radius: 3px; transition: width 0.3s; }
-  .progress-avg { display: flex; justify-content: space-between; border-top: 1px solid #eee; padding-top: 8px; margin-top: 4px; }
-  .progress-avg span { font-size: 12px; color: #888; }
-  .progress-avg strong { font-size: 12px; color: #333; }
-
-  .time-section { }
-  .time-title { font-size: 12px; font-weight: 800; color: #222; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px; }
-  .time-row-r { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid #f5f5f5; }
-  .time-name { font-size: 12px; color: #333; }
-  .time-val { font-size: 12px; color: #888; }
-
-  .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; z-index: 100; }
-  .modal { background: white; border-radius: 10px; padding: 20px; width: 320px; box-shadow: 0 8px 32px rgba(0,0,0,0.15); }
-  .modal-title { font-size: 15px; font-weight: 700; margin-bottom: 14px; }
-  .modal-list { list-style: none; margin-bottom: 12px; }
-  .modal-item { display: flex; align-items: center; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #f0f0f0; }
-  .modal-item span { font-size: 13px; }
-  .remove-btn { color: #e74c3c; font-size: 16px; cursor: pointer; border: none; background: none; padding: 0 4px; }
-  .modal-add { display: flex; gap: 6px; margin-bottom: 12px; }
-  .modal-add input { flex: 1; border: 1px solid #dde3ec; border-radius: 4px; padding: 6px 8px; font-size: 12px; }
-  .modal-add button { background: #5b8dee; color: white; border: none; border-radius: 4px; padding: 6px 10px; font-size: 12px; cursor: pointer; }
-  .modal-close { width: 100%; background: #f5f7fb; border: 1px solid #dde3ec; border-radius: 6px; padding: 8px; font-size: 13px; cursor: pointer; }
+  .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(30,50,90,0.25); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  .modal { background: white; border-radius: 14px; padding: 24px; width: 340px; box-shadow: 0 12px 40px rgba(30,50,90,0.18); }
+  .modal-title { font-size: 16px; font-weight: 700; color: #1a2a4a; margin-bottom: 16px; }
+  .modal-list { list-style: none; margin-bottom: 14px; }
+  .modal-item { display: flex; align-items: center; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid #f0f4f8; }
+  .modal-item span { font-size: 13px; color: #2a3a5a; }
+  .remove-btn { color: #cc4444; font-size: 15px; cursor: pointer; border: none; background: none; padding: 0 6px; }
+  .modal-add { display: flex; gap: 8px; margin-bottom: 14px; }
+  .modal-add input { flex: 1; border: 1.5px solid #d0dcec; border-radius: 6px; padding: 7px 10px; font-size: 13px; outline: none; }
+  .modal-add input:focus { border-color: #4a8de8; }
+  .modal-add button { background: #4a8de8; color: white; border: none; border-radius: 6px; padding: 7px 14px; font-size: 13px; cursor: pointer; font-weight: 600; }
+  .modal-close { width: 100%; background: #f0f5fc; border: 1.5px solid #d0dcec; border-radius: 8px; padding: 9px; font-size: 13px; cursor: pointer; color: #2a3a5a; font-weight: 500; }
 </style>
 </head>
 <body>
-<div class="app" id="app"></div>
-
+<div id="app"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
-const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-const QUOTES = [
-  '"We are what we repeatedly do. Excellence, then, is not an act, but a habit." – Aristotle',
-  '"Success is the sum of small efforts, repeated day in and day out." – Robert Collier',
-  '"Discipline is the bridge between goals and accomplishment." – Jim Rohn',
-  '"The secret of your future is hidden in your daily routine." – Mike Murdock',
-  '"Motivation gets you going, but discipline keeps you growing." – John C. Maxwell',
-  '"It does not matter how slowly you go as long as you do not stop." – Confucius',
-  '"A year from now you may wish you had started today." – Karen Lamb',
-  '"Small daily improvements over time lead to stunning results." – Robin Sharma',
-  '"Champions aren\'t made in gyms. Champions are made from something inside." – Muhammad Ali',
-  '"You don\'t rise to the level of your goals, you fall to the level of your systems." – James Clear',
-  '"The only way to do great work is to love what you do." – Steve Jobs',
-  '"Push yourself, because no one else is going to do it for you." – Anonymous'
+const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const QUOTES=[
+  '"We are what we repeatedly do. Excellence, then, is not an act, but a habit." - Aristotle',
+  '"Success is the sum of small efforts, repeated day in and day out." - Robert Collier',
+  '"Discipline is the bridge between goals and accomplishment." - Jim Rohn',
+  '"The secret of your future is hidden in your daily routine." - Mike Murdock',
+  '"Motivation gets you going, but discipline keeps you growing." - John C. Maxwell',
+  '"It does not matter how slowly you go as long as you do not stop." - Confucius',
+  '"A year from now you may wish you had started today." - Karen Lamb',
+  '"Small daily improvements over time lead to stunning results." - Robin Sharma',
+  '"You don\'t rise to the level of your goals, you fall to the level of your systems." - James Clear',
+  '"The only way to do great work is to love what you do." - Steve Jobs',
+  '"Push yourself, because no one else is going to do it for you." - Anonymous',
+  '"Be stronger than your strongest excuse." - Anonymous'
 ];
+const COLORS=['#4a8de8','#e87a4a','#4ac8a0','#a07ae8','#e8c84a','#e84a7a','#4ae8c8','#8ae84a','#e84a4a'];
+const DEF_HABITS=['Wake up 7:30','Eat Meal Prep','Run','5 min music','5 min photos','5 Min Reading','No kush','No corn','Bed by 11PM'];
+const DEF_TIME=['Work','School','Physical'];
 
-const DEFAULT_HABITS = ['Wake up 7:30','Eat Meal Prep','Run','5 min music','5 min photos','5 Min Reading','No kush','No corn','Bed by 11PM'];
-const DEFAULT_TIME = ['Work','School','Physical'];
+function getDays(m,y){return new Date(y,m+1,0).getDate();}
+function load(){try{const s=localStorage.getItem('cdb3');if(s)return JSON.parse(s);}catch(e){}return null;}
+function save(){try{localStorage.setItem('cdb3',JSON.stringify({habits:S.habits,timeCategories:S.timeCategories,checks:S.checks,times:S.times}));}catch(e){}}
 
-function getDaysInMonth(month, year) {
-  return new Date(year, month + 1, 0).getDate();
-}
-
-const today = new Date();
-
-function loadState() {
-  try {
-    const saved = localStorage.getItem('consistencyDashboard');
-    if (saved) return JSON.parse(saved);
-  } catch(e) {}
-  return null;
-}
-
-function saveState() {
-  try {
-    localStorage.setItem('consistencyDashboard', JSON.stringify({
-      habits: state.habits,
-      timeCategories: state.timeCategories,
-      checks: state.checks,
-      times: state.times,
-    }));
-  } catch(e) {}
-}
-
-const saved = loadState();
-let state = {
-  currentMonth: today.getMonth(),
-  currentYear: today.getFullYear(),
-  habits: saved ? saved.habits : [...DEFAULT_HABITS],
-  timeCategories: saved ? saved.timeCategories : [...DEFAULT_TIME],
-  checks: saved ? saved.checks : {},
-  times: saved ? saved.times : {},
-  showModal: false,
-  showTimeModal: false,
-  newHabit: '',
-  newTime: '',
+const today=new Date(), sv=load();
+let S={
+  m:today.getMonth(), y:today.getFullYear(),
+  habits:sv?sv.habits:[...DEF_HABITS],
+  timeCategories:sv?sv.timeCategories:[...DEF_TIME],
+  checks:sv?sv.checks:{}, times:sv?sv.times:{},
+  showM:false, showT:false, nH:'', nT:''
 };
 
-function ck(hIdx, day) { return `${hIdx}_${day}_${state.currentMonth}_${state.currentYear}`; }
-function tk(cIdx, day) { return `t${cIdx}_${day}_${state.currentMonth}_${state.currentYear}`; }
+function ck(hi,d){return `${hi}_${d}_${S.m}_${S.y}`;}
+function tk(ci,d){return `t${ci}_${d}_${S.m}_${S.y}`;}
+function dayPct(d){if(!S.habits.length)return 0;let c=0;S.habits.forEach((_,i)=>{if(S.checks[ck(i,d)])c++;});return Math.round(c/S.habits.length*100);}
+function habitPct(hi){const days=getDays(S.m,S.y);let c=0;for(let d=1;d<=days;d++)if(S.checks[ck(hi,d)])c++;return Math.round(c/days*100);}
+function overall(){if(!S.habits.length)return 0;const days=getDays(S.m,S.y);let tot=0,fil=0;S.habits.forEach((_,i)=>{for(let d=1;d<=days;d++){tot++;if(S.checks[ck(i,d)])fil++;}});return tot===0?0:parseFloat((fil/tot*100).toFixed(1));}
+function timeAvg(ci){const days=getDays(S.m,S.y);let t=0;for(let d=1;d<=days;d++)t+=parseFloat(S.times[tk(ci,d)]||0);return(t/days).toFixed(1);}
+function weeks(days){const w=[];let n=1,s=1;while(s<=days){const e=Math.min(s+6,days);w.push({label:`Week ${n}`,s,e});s=e+1;n++;}return w;}
 
-function getDayPct(day) {
-  if (state.habits.length === 0) return 0;
-  let checked = 0;
-  state.habits.forEach((_, i) => { if (state.checks[ck(i, day)]) checked++; });
-  return Math.round((checked / state.habits.length) * 100);
-}
+let LC=null,RC=null;
 
-function getHabitPct(hIdx) {
-  const days = getDaysInMonth(state.currentMonth, state.currentYear);
-  let checked = 0;
-  for (let d = 1; d <= days; d++) { if (state.checks[ck(hIdx, d)]) checked++; }
-  return Math.round((checked / days) * 100);
-}
+function render(){
+  const days=getDays(S.m,S.y), ov=overall(), wks=weeks(days), q=QUOTES[S.m%QUOTES.length];
+  const weMap={};wks.forEach(w=>{weMap[w.e]=true;});
 
-function getOverallPct() {
-  if (state.habits.length === 0) return 0;
-  const days = getDaysInMonth(state.currentMonth, state.currentYear);
-  let total = 0, filled = 0;
-  state.habits.forEach((_, i) => {
-    for (let d = 1; d <= days; d++) { total++; if (state.checks[ck(i, d)]) filled++; }
-  });
-  return total === 0 ? 0 : Math.round((filled / total) * 100);
-}
-
-function getTimeAvg(cIdx) {
-  const days = getDaysInMonth(state.currentMonth, state.currentYear);
-  let total = 0;
-  for (let d = 1; d <= days; d++) { total += parseFloat(state.times[tk(cIdx, d)] || 0); }
-  return (total / days).toFixed(1);
-}
-
-let lineChart = null;
-let ringChart = null;
-
-function render() {
-  const days = getDaysInMonth(state.currentMonth, state.currentYear);
-  const overall = getOverallPct();
-  const quote = QUOTES[state.currentMonth % QUOTES.length];
-
-  const weeks = [];
-  let w = 1, start = 1;
-  while (start <= days) {
-    const end = Math.min(start + 6, days);
-    weeks.push({ label: `Week ${w}`, start, end });
-    start = end + 1; w++;
-  }
-
-  const app = document.getElementById('app');
-  app.innerHTML = `
-    <nav class="nav">
-      <div class="nav-logo">
-        <div class="nav-icon">
-          <svg width="18" height="18" viewBox="0 0 18 18"><rect x="2" y="2" width="6" height="6" rx="1"/><rect x="10" y="2" width="6" height="6" rx="1"/><rect x="2" y="10" width="6" height="6" rx="1"/><rect x="10" y="10" width="6" height="6" rx="1"/></svg>
-        </div>
-        <div class="nav-title">THE<span>CONSISTENCY DASHBOARD</span></div>
-      </div>
-      <div class="nav-links">
-        <button class="nav-btn active">Dashboard</button>
-        <button class="nav-btn">Planning</button>
-        <span class="nav-user">user@example.com</span>
-        <span class="nav-logout">Log out</span>
-      </div>
-    </nav>
-
-    <div class="month-tabs">
-      ${MONTHS.map((m, i) => `<div class="month-tab ${i === state.currentMonth ? 'active' : ''}" data-mi="${i}">${m}</div>`).join('')}
+  document.getElementById('app').innerHTML=`
+  <nav class="nav">
+    <div class="nav-logo">
+      <div class="nav-icon"><svg width="20" height="20" viewBox="0 0 20 20"><rect x="2" y="2" width="7" height="7" rx="1.5"/><rect x="11" y="2" width="7" height="7" rx="1.5"/><rect x="2" y="11" width="7" height="7" rx="1.5"/><rect x="11" y="11" width="7" height="7" rx="1.5"/></svg></div>
+      <div class="nav-brand"><div class="sub">THE</div><div class="main">CONSISTENCY DASHBOARD</div></div>
     </div>
-
-    <div class="main">
-      <div class="sidebar">
+    <div class="nav-right">
+      <button class="nav-pill active">Dashboard</button>
+      <button class="nav-pill">Planning</button>
+      <span class="nav-email">user@example.com</span>
+      <span class="nav-logout">Log out</span>
+    </div>
+  </nav>
+  <div class="layout">
+    <div class="left-col">
+      <div class="sidebar-card">
         <div class="sidebar-section">
-          <div class="sidebar-header">
-            <span class="sidebar-title">Habits</span>
-            <span class="edit-btn" id="editHabitsBtn">Edit</span>
-          </div>
-          ${state.habits.map(h => `<div class="habit-item">${h}</div>`).join('')}
+          <div class="sidebar-header"><span class="sidebar-title">Habits</span><span class="edit-btn" id="eH">Edit</span></div>
+          ${S.habits.map(h=>`<div class="habit-item">${h}</div>`).join('')}
         </div>
         <div class="sidebar-section">
-          <div class="sidebar-header">
-            <span class="sidebar-title">Time Spent Daily</span>
-            <span class="edit-btn" id="editTimeBtn">Edit</span>
-          </div>
-          ${state.timeCategories.map(c => `<div class="habit-item">${c}</div>`).join('')}
+          <div class="sidebar-header"><span class="sidebar-title">Time Spent<br>Daily</span><span class="edit-btn" id="eT">Edit</span></div>
+          ${S.timeCategories.map(c=>`<div class="habit-item">${c}</div>`).join('')}
         </div>
       </div>
-
-      <div class="center">
-        <div class="month-header">
-          <div class="month-name">${MONTHS[state.currentMonth].toUpperCase()}</div>
-          <div class="month-quote">${quote}</div>
-        </div>
-
-        <div class="chart-card">
-          <div class="chart-label">Daily Progress</div>
-          <div class="chart-wrap"><canvas id="lineChart"></canvas></div>
-        </div>
-
-        <div class="grid-card">
-          <div style="overflow-x:auto;">
-            <table class="grid-table">
-              <thead>
-                <tr>
-                  <th style="width:130px;"></th>
-                  ${weeks.map(wk => `<th colspan="${wk.end - wk.start + 1}" class="week-header">${wk.label}</th>`).join('')}
-                </tr>
-                <tr>
-                  <th></th>
-                  ${Array.from({length: days}, (_, i) => `<th class="day-num">${i+1}</th>`).join('')}
-                </tr>
-              </thead>
-              <tbody>
-                ${state.habits.map((h, hi) => `
-                  <tr>
-                    <td class="habit-row-label">${h}</td>
-                    ${Array.from({length: days}, (_, di) => {
-                      const checked = state.checks[ck(hi, di+1)] ? 'checked' : '';
-                      return `<td class="habit-cb"><input type="checkbox" data-hi="${hi}" data-day="${di+1}" ${checked}></td>`;
-                    }).join('')}
-                  </tr>
-                `).join('')}
-                <tr>
-                  <td class="habit-row-label" style="font-size:10px;color:#aaa;">% done</td>
-                  ${Array.from({length: days}, (_, di) => {
-                    const p = getDayPct(di+1);
-                    return `<td class="pct-cell ${p > 0 ? 'has-pct' : ''}">${p}%</td>`;
-                  }).join('')}
-                </tr>
-                <tr><td colspan="${days+1}" style="height:8px;background:#f8f9fc;"></td></tr>
-                ${state.timeCategories.map((c, ci) => `
-                  <tr>
-                    <td class="time-row-label">${c}</td>
-                    ${Array.from({length: days}, (_, di) => `
-                      <td class="habit-cb"><input class="time-input" type="number" min="0" max="24" step="0.5" value="${state.times[tk(ci,di+1)]||''}" placeholder="0" data-ci="${ci}" data-day="${di+1}"></td>
-                    `).join('')}
-                  </tr>
-                `).join('')}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <div class="right-panel">
-        <div class="score-section">
-          <div class="score-title">Discipline Score</div>
-          <div class="score-ring">
-            <canvas id="ringChart" width="120" height="120"></canvas>
-            <div class="score-text">${overall}%</div>
-          </div>
-        </div>
-
-        <div class="progress-section">
-          <div class="progress-title">Progress</div>
-          ${state.habits.map((h, i) => {
-            const p = getHabitPct(i);
-            return `<div class="progress-item">
-              <div class="progress-row"><span class="progress-name">${h}</span><span class="progress-pct">${p}%</span></div>
-              <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${p}%"></div></div>
-            </div>`;
-          }).join('')}
-          <div class="progress-avg">
-            <span>Average</span><strong>${overall}%</strong>
-          </div>
-        </div>
-
-        <div class="time-section">
-          <div class="time-title">Average Time Spent Per Day</div>
-          ${state.timeCategories.map((c, ci) => `
-            <div class="time-row-r">
-              <span class="time-name">${c}</span>
-              <span class="time-val">${getTimeAvg(ci)} h</span>
-            </div>
-          `).join('')}
-        </div>
+      <div class="month-tabs-wrap">
+        <div class="month-tabs">${MONTHS.map((m,i)=>`<div class="month-tab${i===S.m?' active':''}" data-mi="${i}">${m}</div>`).join('')}</div>
       </div>
     </div>
 
-    ${state.showModal ? `
-    <div class="modal-overlay" id="modalOverlay">
-      <div class="modal">
-        <div class="modal-title">Edit Habits</div>
-        <ul class="modal-list">
-          ${state.habits.map((h,i) => `
-            <li class="modal-item"><span>${h}</span><button class="remove-btn" data-ri="${i}">&#x2715;</button></li>
-          `).join('')}
-        </ul>
-        <div class="modal-add">
-          <input id="newHabitInput" placeholder="New habit..." value="${state.newHabit}">
-          <button id="addHabitBtn">Add</button>
-        </div>
-        <button class="modal-close" id="closeModal">Done</button>
+    <div class="main-card">
+      <div class="month-header">
+        <div class="month-name">${MONTHS[S.m].toUpperCase()}</div>
+        <div class="month-quote">${q}</div>
       </div>
-    </div>` : ''}
+      <div>
+        <div class="chart-label">Daily Progress</div>
+        <div class="chart-wrap"><canvas id="LC"></canvas></div>
+      </div>
+      <div class="grid-wrap">
+        <table class="grid-table">
+          <thead>
+            <tr class="week-group-header">
+              <td class="label-cell"></td>
+              ${wks.map(w=>`<td colspan="${w.e-w.s+1}" class="week-group-cell">${w.label}</td>`).join('')}
+            </tr>
+            <tr class="day-num-row">
+              <td class="label-cell"></td>
+              ${Array.from({length:days},(_,i)=>{const d=i+1;return`<td class="day-num-cell${weMap[d]?' we':''}">${d}</td>`;}).join('')}
+            </tr>
+          </thead>
+          <tbody>
+            ${S.habits.map((h,hi)=>`
+              <tr class="habit-row">
+                <td class="habit-label">${h}</td>
+                ${Array.from({length:days},(_,di)=>{const d=di+1,chk=S.checks[ck(hi,d)]?'checked':'',we=weMap[d]?' we':'';return`<td class="cb-cell${we}"><input type="checkbox" data-hi="${hi}" data-day="${d}" ${chk}></td>`;}).join('')}
+              </tr>`).join('')}
+            <tr class="pct-row">
+              <td class="habit-label" style="font-size:10px;color:#9ab0cc;">% done</td>
+              ${Array.from({length:days},(_,di)=>{const d=di+1,p=dayPct(d),we=weMap[d]?' we':'';return`<td class="pct-val${p>0?' has':''}${we}">${p}%</td>`;}).join('')}
+            </tr>
+            <tr class="pct-row">
+              <td class="habit-label" style="font-size:10px;color:#ccc;"></td>
+              ${Array.from({length:days},(_,di)=>{const d=di+1,we=weMap[d]?' we':'';return`<td class="pct-val${we}" style="color:#b0c4da;">${d}</td>`;}).join('')}
+            </tr>
+            <tr class="time-divider"><td colspan="${days+1}"></td></tr>
+            ${S.timeCategories.map((c,ci)=>`
+              <tr class="habit-row">
+                <td class="time-label">${c}</td>
+                ${Array.from({length:days},(_,di)=>{const d=di+1,we=weMap[d]?' we':'';return`<td class="time-ic${we}"><input class="time-inp" type="number" min="0" max="24" step="0.5" value="${S.times[tk(ci,d)]||''}" placeholder="0" data-ci="${ci}" data-day="${d}"></td>`;}).join('')}
+              </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
 
-    ${state.showTimeModal ? `
-    <div class="modal-overlay" id="timeModalOverlay">
-      <div class="modal">
-        <div class="modal-title">Edit Time Categories</div>
-        <ul class="modal-list">
-          ${state.timeCategories.map((c,i) => `
-            <li class="modal-item"><span>${c}</span><button class="remove-btn" data-tri="${i}">&#x2715;</button></li>
-          `).join('')}
-        </ul>
-        <div class="modal-add">
-          <input id="newTimeInput" placeholder="New category..." value="${state.newTime}">
-          <button id="addTimeBtn">Add</button>
-        </div>
-        <button class="modal-close" id="closeTimeModal">Done</button>
+    <div class="right-card">
+      <div class="score-title">Discipline Score</div>
+      <div class="score-ring-wrap">
+        <canvas id="RC" width="150" height="150"></canvas>
+        <div class="score-text">${ov}%</div>
       </div>
-    </div>` : ''}
+      <div class="prog-title">Progress</div>
+      ${S.habits.map((h,i)=>{const p=habitPct(i),col=COLORS[i%COLORS.length];return`<div class="prog-item"><div class="prog-row"><span class="prog-name">${h}</span><span class="prog-pct">${p}%</span></div><div class="prog-bg"><div class="prog-fill" style="width:${p}%;background:${col};"></div></div></div>`;}).join('')}
+      <hr class="prog-divider">
+      <div class="prog-avg"><span style="font-size:12px;color:#8a9ab0;">Average</span><span style="font-size:12px;font-weight:700;color:#2a3a5a;">${ov}%</span></div>
+      <div class="time-avg-title">Average Time Spent Per Day</div>
+      ${S.timeCategories.map((c,ci)=>`<div class="time-avg-row"><span class="time-avg-name">${c}</span><span class="time-avg-val">${timeAvg(ci)} h</span></div>`).join('')}
+    </div>
+  </div>
+
+  ${S.showM?`<div class="modal-overlay" id="mO"><div class="modal">
+    <div class="modal-title">Edit Habits</div>
+    <ul class="modal-list">${S.habits.map((h,i)=>`<li class="modal-item"><span>${h}</span><button class="remove-btn" data-ri="${i}">&#x2715;</button></li>`).join('')}</ul>
+    <div class="modal-add"><input id="nHI" placeholder="Add new habit..." value="${S.nH}"><button id="aH">Add</button></div>
+    <button class="modal-close" id="cM">Done</button>
+  </div></div>`:''}
+  ${S.showT?`<div class="modal-overlay" id="tO"><div class="modal">
+    <div class="modal-title">Edit Time Categories</div>
+    <ul class="modal-list">${S.timeCategories.map((c,i)=>`<li class="modal-item"><span>${c}</span><button class="remove-btn" data-tri="${i}">&#x2715;</button></li>`).join('')}</ul>
+    <div class="modal-add"><input id="nTI" placeholder="Add new category..." value="${S.nT}"><button id="aT">Add</button></div>
+    <button class="modal-close" id="cT">Done</button>
+  </div></div>`:''}
   `;
 
-  // Line chart
-  const lineCtx = document.getElementById('lineChart');
-  if (lineCtx) {
-    if (lineChart) lineChart.destroy();
-    lineChart = new Chart(lineCtx, {
-      type: 'line',
-      data: {
-        labels: Array.from({length: days}, (_, i) => i+1),
-        datasets: [{
-          data: Array.from({length: days}, (_, i) => getDayPct(i+1)),
-          borderColor: '#5b8dee',
-          backgroundColor: 'rgba(91,141,238,0.08)',
-          fill: true, tension: 0.3, pointRadius: 2,
-          pointBackgroundColor: '#5b8dee', borderWidth: 2,
-        }]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { display: false } },
-        scales: {
-          y: { min: 0, max: 100, ticks: { callback: v => v+'%', font: { size: 10 } }, grid: { color: '#f0f0f0' } },
-          x: { ticks: { font: { size: 10 } }, grid: { display: false } }
-        }
-      }
-    });
-  }
-
-  // Ring chart
-  const ringCtx = document.getElementById('ringChart');
-  if (ringCtx) {
-    if (ringChart) ringChart.destroy();
-    ringChart = new Chart(ringCtx, {
-      type: 'doughnut',
-      data: {
-        datasets: [{
-          data: [overall, 100 - overall],
-          backgroundColor: ['#5b8dee', '#e8ecf4'],
-          borderWidth: 0,
-        }]
-      },
-      options: {
-        cutout: '78%',
-        plugins: { legend: { display: false }, tooltip: { enabled: false } },
-      }
-    });
-  }
+  // Charts
+  const lc=document.getElementById('LC');
+  if(lc){if(LC)LC.destroy();LC=new Chart(lc,{type:'line',data:{labels:Array.from({length:days},(_,i)=>i+1),datasets:[{data:Array.from({length:days},(_,i)=>dayPct(i+1)),borderColor:'#4a8de8',backgroundColor:'rgba(74,141,232,0.07)',fill:true,tension:0.35,pointRadius:2,pointBackgroundColor:'#4a8de8',borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{min:0,max:100,ticks:{callback:v=>v+'%',font:{size:10},color:'#9ab0cc',stepSize:25},grid:{color:'#eef2f8'},border:{display:false}},x:{ticks:{font:{size:10},color:'#9ab0cc',maxTicksLimit:10},grid:{display:false},border:{display:false}}}}});}
+  const rc=document.getElementById('RC');
+  if(rc){if(RC)RC.destroy();RC=new Chart(rc,{type:'doughnut',data:{datasets:[{data:[ov,100-ov],backgroundColor:['#4a8de8','#dce8f5'],borderWidth:0}]},options:{cutout:'80%',plugins:{legend:{display:false},tooltip:{enabled:false}}}});}
 
   // Events
-  document.querySelectorAll('.month-tab').forEach(el => {
-    el.addEventListener('click', () => { state.currentMonth = parseInt(el.dataset.mi); render(); });
-  });
+  document.querySelectorAll('.month-tab').forEach(el=>el.addEventListener('click',()=>{S.m=parseInt(el.dataset.mi);render();}));
+  document.querySelectorAll('input[data-hi]').forEach(el=>el.addEventListener('change',()=>{const k=ck(parseInt(el.dataset.hi),parseInt(el.dataset.day));if(el.checked)S.checks[k]=true;else delete S.checks[k];save();render();}));
+  document.querySelectorAll('input[data-ci]').forEach(el=>el.addEventListener('change',()=>{S.times[tk(parseInt(el.dataset.ci),parseInt(el.dataset.day))]=parseFloat(el.value)||0;save();render();}));
 
-  document.querySelectorAll('input[data-hi]').forEach(el => {
-    el.addEventListener('change', () => {
-      const key = ck(parseInt(el.dataset.hi), parseInt(el.dataset.day));
-      if (el.checked) state.checks[key] = true; else delete state.checks[key];
-      saveState(); render();
-    });
-  });
+  const eH=document.getElementById('eH');if(eH)eH.addEventListener('click',()=>{S.showM=true;render();});
+  const eT=document.getElementById('eT');if(eT)eT.addEventListener('click',()=>{S.showT=true;render();});
+  const cM=document.getElementById('cM');if(cM)cM.addEventListener('click',()=>{S.showM=false;render();});
+  const cT=document.getElementById('cT');if(cT)cT.addEventListener('click',()=>{S.showT=false;render();});
 
-  document.querySelectorAll('input[data-ci]').forEach(el => {
-    el.addEventListener('change', () => {
-      state.times[tk(parseInt(el.dataset.ci), parseInt(el.dataset.day))] = parseFloat(el.value) || 0;
-      saveState(); render();
-    });
-  });
+  const nHI=document.getElementById('nHI');if(nHI){nHI.addEventListener('input',e=>{S.nH=e.target.value;});nHI.focus();}
+  const aH=document.getElementById('aH');if(aH)aH.addEventListener('click',()=>{if(S.nH.trim()){S.habits.push(S.nH.trim());S.nH='';save();render();}});
+  const nTI=document.getElementById('nTI');if(nTI){nTI.addEventListener('input',e=>{S.nT=e.target.value;});nTI.focus();}
+  const aT=document.getElementById('aT');if(aT)aT.addEventListener('click',()=>{if(S.nT.trim()){S.timeCategories.push(S.nT.trim());S.nT='';save();render();}});
 
-  const editBtn = document.getElementById('editHabitsBtn');
-  if (editBtn) editBtn.addEventListener('click', () => { state.showModal = true; render(); });
+  document.querySelectorAll('.remove-btn[data-ri]').forEach(el=>el.addEventListener('click',()=>{S.habits.splice(parseInt(el.dataset.ri),1);save();render();}));
+  document.querySelectorAll('.remove-btn[data-tri]').forEach(el=>el.addEventListener('click',()=>{S.timeCategories.splice(parseInt(el.dataset.tri),1);save();render();}));
 
-  const editTimeBtn = document.getElementById('editTimeBtn');
-  if (editTimeBtn) editTimeBtn.addEventListener('click', () => { state.showTimeModal = true; render(); });
-
-  const closeModal = document.getElementById('closeModal');
-  if (closeModal) closeModal.addEventListener('click', () => { state.showModal = false; render(); });
-
-  const closeTimeModal = document.getElementById('closeTimeModal');
-  if (closeTimeModal) closeTimeModal.addEventListener('click', () => { state.showTimeModal = false; render(); });
-
-  const newHabitInput = document.getElementById('newHabitInput');
-  if (newHabitInput) { newHabitInput.addEventListener('input', e => { state.newHabit = e.target.value; }); newHabitInput.focus(); }
-
-  const addHabitBtn = document.getElementById('addHabitBtn');
-  if (addHabitBtn) addHabitBtn.addEventListener('click', () => {
-    if (state.newHabit.trim()) { state.habits.push(state.newHabit.trim()); state.newHabit = ''; saveState(); render(); }
-  });
-
-  const newTimeInput = document.getElementById('newTimeInput');
-  if (newTimeInput) { newTimeInput.addEventListener('input', e => { state.newTime = e.target.value; }); newTimeInput.focus(); }
-
-  const addTimeBtn = document.getElementById('addTimeBtn');
-  if (addTimeBtn) addTimeBtn.addEventListener('click', () => {
-    if (state.newTime.trim()) { state.timeCategories.push(state.newTime.trim()); state.newTime = ''; saveState(); render(); }
-  });
-
-  document.querySelectorAll('.remove-btn[data-ri]').forEach(el => {
-    el.addEventListener('click', () => { state.habits.splice(parseInt(el.dataset.ri), 1); saveState(); render(); });
-  });
-  document.querySelectorAll('.remove-btn[data-tri]').forEach(el => {
-    el.addEventListener('click', () => { state.timeCategories.splice(parseInt(el.dataset.tri), 1); saveState(); render(); });
-  });
-
-  const overlay = document.getElementById('modalOverlay');
-  if (overlay) overlay.addEventListener('click', e => { if (e.target === overlay) { state.showModal = false; render(); } });
-  const tOverlay = document.getElementById('timeModalOverlay');
-  if (tOverlay) tOverlay.addEventListener('click', e => { if (e.target === tOverlay) { state.showTimeModal = false; render(); } });
+  const mO=document.getElementById('mO');if(mO)mO.addEventListener('click',e=>{if(e.target===mO){S.showM=false;render();}});
+  const tO=document.getElementById('tO');if(tO)tO.addEventListener('click',e=>{if(e.target===tO){S.showT=false;render();}});
 }
 
 render();
