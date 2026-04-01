@@ -394,7 +394,7 @@ function render(){
         <div class="streak-sp b2" style="height:${DAYNUM_H}px;"></div>
         ${streaks.map(s=>`<div class="streak-cell ${s>0?'on':'off'}" style="height:${ROW_H}px;">${s>0?'🔥'+s:'—'}</div>`).join('')}
         <div class="streak-sp-pct" style="height:${PCT_H}px;"></div>
-        <div class="streak-sp-dr" style="height:${DR_H}px;"></div>
+
       </div>
 
       <!-- LABELS COL -->
@@ -407,7 +407,7 @@ function render(){
         <div class="label-spacer label-sp2" style="height:${DAYNUM_H}px;"></div>
         ${S.habits.map(h=>`<div class="habit-label-row" style="height:${ROW_H}px;">${h.name}</div>`).join('')}
         <div class="pct-label-row" style="height:${PCT_H}px;">% done</div>
-        <div class="dayrepeat-label-row" style="height:${DR_H}px;"></div>
+
       </div>
 
       <!-- GRID -->
@@ -425,7 +425,7 @@ function render(){
               return`<td class="cb-cell${we}"><span class="cb-box${chk?' checked':''}" data-hid="${h.id}" data-day="${d}"></span></td>`;
             }).join('')}</tr>`).join('')}
             <tr class="pct-row" style="height:${PCT_H}px;">${Array.from({length:days},(_,di)=>{const d=di+1,p=dayPct(d),we=weMap[d]?' we':'';return`<td class="${we}" style="text-align:center;padding:3px 1px;"><span class="pct-badge" data-day="${d}" style="color:${ptc(p)};background:${pbg(p)};">${p}%</span></td>`;}).join('')}</tr>
-            <tr class="dayrepeat-row" style="height:${DR_H}px;">${Array.from({length:days},(_,di)=>{const d=di+1,we=weMap[d]?' we':'';return`<td class="dayrepeat-cell${we}">${d}</td>`;}).join('')}</tr>
+
           </tbody>
         </table>
       </div>
