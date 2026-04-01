@@ -424,7 +424,7 @@ function render(){
               if(!scheduled) return`<td class="cb-cell${we} inactive"></td>`;
               return`<td class="cb-cell${we}"><span class="cb-box${chk?' checked':''}" data-hid="${h.id}" data-day="${d}"></span></td>`;
             }).join('')}</tr>`).join('')}
-            <tr class="pct-row" style="height:${PCT_H}px;">${Array.from({length:days},(_,di)=>{const d=di+1,p=dayPct(d),we=weMap[d]?' we':'';return`<td class="${we}" style="text-align:center;padding:3px 1px;"><span class="pct-badge" style="color:${ptc(p)};background:${pbg(p)};">${p}%</span></td>`;}).join('')}</tr>
+            <tr class="pct-row" style="height:${PCT_H}px;">${Array.from({length:days},(_,di)=>{const d=di+1,p=dayPct(d),we=weMap[d]?' we':'';return`<td class="${we}" style="text-align:center;padding:3px 1px;"><span class="pct-badge" data-day="${d}" style="color:${ptc(p)};background:${pbg(p)};">${p}%</span></td>`;}).join('')}</tr>
             <tr class="dayrepeat-row" style="height:${DR_H}px;">${Array.from({length:days},(_,di)=>{const d=di+1,we=weMap[d]?' we':'';return`<td class="dayrepeat-cell${we}">${d}</td>`;}).join('')}</tr>
           </tbody>
         </table>
@@ -485,12 +485,44 @@ ${S.showM?`<div class="modal-overlay" id="modalOverlay"><div class="modal">
 
 // EVENT DELEGATION
 document.getElementById('app').addEventListener('click',e=>{
-  // Checkbox
+  // Checkbox — update DOM in place to preserve horizontal scroll
   const cb=e.target.closest('.cb-box');
   if(cb){
     const hid=cb.dataset.hid,d=parseInt(cb.dataset.day),k=ck(hid,d);
-    if(S.checks[k])delete S.checks[k];else S.checks[k]=true;
-    saveData();render();return;
+    const nowChecked=!S.checks[k];
+    if(nowChecked)S.checks[k]=true;else delete S.checks[k];
+    // Toggle checked class directly — no full re-render, no scroll reset
+    cb.classList.toggle('checked',nowChecked);
+    // Update pct badge for this day
+    const p=dayPct(d);
+    const badges=document.querySelectorAll('.pct-badge');
+    badges.forEach(b=>{ if(parseInt(b.dataset.day)===d){b.textContent=p+'%';b.style.color=ptc(p);b.style.background=pbg(p);} });
+    // Update streak cell for this habit
+    const hi=S.habits.findIndex(h=>h.id===hid);
+    if(hi>=0){
+      const sc=document.querySelectorAll('.streak-cell')[hi];
+      if(sc){const s=getStreak(S.habits[hi]);sc.className='streak-cell '+(s>0?'on':'off');sc.textContent=s>0?'\u{1F525}'+s:'\u2014';}
+    }
+    // Update right panel progress bar + pct for this habit
+    if(hi>=0){
+      const items=document.querySelectorAll('.prog-item');
+      if(items[hi]){
+        const hp=habitPct(S.habits[hi]);
+        const fill=items[hi].querySelector('.prog-fill');
+        const pctSpan=items[hi].querySelector('.prog-row span:last-child span:last-child');
+        if(fill){fill.style.width=hp+'%';fill.style.opacity=0.45+hp/100*0.55;}
+        if(pctSpan){pctSpan.textContent=hp+'%';pctSpan.style.color=ptc(hp);pctSpan.style.fontWeight=hp>0?800:500;}
+      }
+    }
+    // Update overall score + ring + avg
+    const ov=overall();
+    const st=document.querySelector('.score-text');
+    if(st)st.textContent=ov+'%';
+    if(LC){LC.data.datasets[0].data[d-1]=p;LC.update('none');}
+    if(RC){RC.data.datasets[0].data=[ov||0.5,100-(ov||0.5)];RC.update('none');}
+    const avgEl=document.querySelector('.prog-avg span:last-child');
+    if(avgEl){avgEl.textContent=ov+'%';avgEl.style.color=ptc(ov);}
+    saveData();return;
   }
   // Theme
   if(e.target.closest('#themeToggle')){S.dark=!S.dark;applyTheme();saveData();render();return;}
