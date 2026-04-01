@@ -59,8 +59,8 @@
   .toggle-knob{position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:var(--accent);transition:left 0.25s;box-shadow:0 1px 4px rgba(0,0,0,0.3)}
   body.dark .toggle-knob{left:24px}
 
-  .layout{display:flex;gap:14px;padding:16px;height:calc(100vh - 62px);overflow:hidden}
-  .main-card{flex:1;background:var(--card);border-radius:18px;padding:22px;display:flex;flex-direction:column;gap:14px;overflow:hidden;min-width:0;box-shadow:0 4px 24px var(--shadow)}
+  .layout{display:flex;gap:14px;padding:16px;min-height:calc(100vh - 62px);overflow-y:auto;overflow-x:hidden}
+  .main-card{flex:1;background:var(--card);border-radius:18px;padding:22px;display:flex;flex-direction:column;gap:14px;overflow:visible;min-width:0;box-shadow:0 4px 24px var(--shadow)}
   .month-header{display:flex;align-items:baseline;gap:20px;flex-wrap:wrap}
   .month-name{font-size:42px;font-weight:900;color:var(--text1);letter-spacing:-1.5px}
   .month-quote{font-size:12.5px;color:var(--text3);font-style:italic;flex:1}
@@ -68,9 +68,9 @@
   .chart-label{font-size:12px;color:var(--text3);font-weight:700;margin-bottom:8px}
   .chart-wrap{position:relative;height:140px}
 
-  .grid-area{display:flex;flex:1;overflow:hidden;background:var(--card2);border-radius:12px;box-shadow:0 1px 6px var(--shadow)}
+  .grid-area{display:flex;overflow:hidden;background:var(--card2);border-radius:12px;box-shadow:0 1px 6px var(--shadow)}
 
-  .streak-col{width:56px;min-width:56px;border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;background:var(--card2)}
+  .streak-col{width:56px;min-width:56px;border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;background:var(--card2);align-self:flex-start}
   .streak-header{display:flex;align-items:center;justify-content:center;border-bottom:1px solid var(--border);background:var(--week-bg);flex-shrink:0;font-size:10px;font-weight:700;color:var(--text3);letter-spacing:0.04em}
   .streak-sp{flex-shrink:0;background:var(--daynum-bg)}
   .streak-sp.b1{border-bottom:1px solid var(--border2)}
@@ -81,7 +81,7 @@
   .streak-sp-pct{flex-shrink:0;border-bottom:1px solid var(--border2);background:var(--pct-bg)}
   .streak-sp-dr{flex-shrink:0;background:var(--daynum-bg)}
 
-  .habit-labels-col{width:170px;min-width:170px;border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;flex-shrink:0}
+  .habit-labels-col{width:170px;min-width:170px;border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;align-self:flex-start}
   .habits-col-header{display:flex;justify-content:space-between;align-items:center;padding:0 14px;border-bottom:1px solid var(--border);background:var(--week-bg);flex-shrink:0}
   .habits-col-title{font-weight:800;font-size:15px;color:var(--text1)}
   .edit-btn{font-size:13px;color:var(--accent2);cursor:pointer;font-weight:600}
@@ -92,7 +92,7 @@
   .pct-label-row{font-size:11px;color:var(--text3);font-weight:600;padding:0 14px;display:flex;align-items:center;flex-shrink:0;background:var(--pct-bg);border-bottom:1px solid var(--border2)}
   .dayrepeat-label-row{font-size:11px;color:var(--text3);padding:0 14px;display:flex;align-items:center;flex-shrink:0;background:var(--daynum-bg)}
 
-  .grid-scroll{flex:1;overflow-x:auto;overflow-y:hidden}
+  .grid-scroll{flex:1;overflow-x:auto;overflow-y:hidden;align-self:flex-start}
   .grid-table{border-collapse:collapse;table-layout:fixed}
   .week-group-cell{text-align:center;font-size:12px;font-weight:700;color:var(--accent);padding:0 14px;border-right:2px solid var(--border);border-bottom:1px solid var(--border);background:var(--week-bg);white-space:nowrap}
   .week-group-cell:last-child{border-right:none}
@@ -122,7 +122,7 @@
   .month-tab{padding:9px 10px;font-size:12px;color:var(--text3);cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;display:inline-block;font-weight:600}
   .month-tab.active{color:var(--accent2);border-bottom-color:var(--accent)}
 
-  .right-card{width:310px;min-width:310px;background:var(--card);border-radius:18px;padding:20px 22px;display:flex;flex-direction:column;overflow-y:auto;box-shadow:0 4px 24px var(--shadow)}
+  .right-card{width:310px;min-width:310px;background:var(--card);border-radius:18px;padding:20px 22px;display:flex;flex-direction:column;overflow-y:visible;box-shadow:0 4px 24px var(--shadow);align-self:flex-start}
   .score-title{font-size:13px;color:var(--text3);font-weight:700;margin-bottom:10px;text-align:center;letter-spacing:0.06em;text-transform:uppercase}
   .score-ring-wrap{position:relative;width:175px;height:175px;margin:0 auto 18px}
   .score-ring-wrap canvas{width:175px;height:175px}
