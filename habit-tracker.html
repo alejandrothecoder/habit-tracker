@@ -266,6 +266,7 @@ async function loadData(){
   if(!S.user) return;
   try{
     const snap=await getDoc(userDoc());
+    alert('Firestore snap exists: ' + snap.exists() + ' | UID: ' + S.user.uid);
     if(snap.exists()){
       const d=snap.data();
       // Only load if this doc belongs to the current signed-in user
