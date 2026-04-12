@@ -204,6 +204,9 @@ const fbApp = initializeApp(firebaseConfig);
 const auth = getAuth(fbApp);
 const db = getFirestore(fbApp);
 
+// Wipe any old localStorage data from previous versions of the app
+['cdb2','cdb3','cdb4','cdb5','cdb6','cdb7','cdb8'].forEach(k=>localStorage.removeItem(k));
+
 const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
 const MONTH_SHORT=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const QUOTES=[
@@ -227,15 +230,11 @@ const ALL_DAYS=[0,1,2,3,4,5,6];
 
 // Default habits as objects with id, name, days
 const DEF_HABITS=[
-  {id:'h1',name:'Wake up 7:30',days:[0,1,2,3,4,5,6]},
-  {id:'h2',name:'Eat Meal Prep',days:[0,1,2,3,4,5,6]},
-  {id:'h3',name:'Run',days:[0,1,2,3,4,5,6]},
-  {id:'h4',name:'5 min music',days:[0,1,2,3,4,5,6]},
-  {id:'h5',name:'5 min photos',days:[0,1,2,3,4,5,6]},
-  {id:'h6',name:'5 Min Reading',days:[0,1,2,3,4,5,6]},
-  {id:'h7',name:'No kush',days:[0,1,2,3,4,5,6]},
-  {id:'h8',name:'No corn',days:[0,1,2,3,4,5,6]},
-  {id:'h9',name:'Bed by 11PM',days:[0,1,2,3,4,5,6]},
+  {id:'h1',name:'Make Bed',days:[0,1,2,3,4,5,6]},
+  {id:'h2',name:'Read 10 min',days:[0,1,2,3,4,5,6]},
+  {id:'h3',name:'No phone first hour',days:[0,1,2,3,4,5,6]},
+  {id:'h4',name:'Gratitude Journal',days:[0,1,2,3,4,5,6]},
+  {id:'h5',name:'No social media after 9PM',days:[0,1,2,3,4,5,6]},
 ];
 
 const WEEK_H=28,DOW_H=24,DAYNUM_H=28,ROW_H=34,PCT_H=28,DR_H=24;
@@ -258,35 +257,48 @@ const S={
 };
 
 let saveTimer=null, LC=null, RC=null;
+let userHasData=false; // only true after user makes a real change or loads existing data
 function applyTheme(){document.body.className=S.dark?'dark':'light';}
 
 function userDoc(){return doc(db,'users',S.user.uid,'data','main');}
 
 async function loadData(){
+  // Always reset to clean defaults first no matter what
+  S.habits = DEF_HABITS.map(h=>({...h, days:[...h.days]}));
+  S.checks = {};
+  S.dark = true;
+  userHasData = false;
+  if(!S.user) return;
   try{
-    const snap=await getDoc(userDoc());
-    if(snap.exists()){
-      const d=snap.data();
-      if(d.habits&&d.habits.length) S.habits=d.habits;
-      if(d.checks) S.checks=d.checks;
-      if(d.dark!==undefined) S.dark=d.dark;
-      // Migrate old habits (strings → objects) if needed
-      S.habits=S.habits.map((h,i)=>{
+    const snap = await getDoc(userDoc());
+    if(!snap.exists()) return;
+    const d = snap.data();
+    if(!d.ownerUid || d.ownerUid !== S.user.uid) return;
+    if(d.habits && Array.isArray(d.habits) && d.habits.length){
+      S.habits = d.habits.map((h,i)=>{
         if(typeof h==='string') return{id:'h_legacy_'+i,name:h,days:[0,1,2,3,4,5,6]};
         if(!h.days) h.days=[0,1,2,3,4,5,6];
         if(!h.id) h.id='h_legacy_'+i;
         return h;
       });
-      applyTheme();
     }
-  }catch(e){console.error('Load error',e);}
+    if(d.checks && typeof d.checks==='object') S.checks = d.checks;
+    if(d.dark !== undefined) S.dark = d.dark;
+    userHasData = true;
+    applyTheme();
+  }catch(e){
+    S.habits = DEF_HABITS.map(h=>({...h, days:[...h.days]}));
+    S.checks = {};
+    console.error('Load error',e);
+  }
 }
 
 function saveData(){
+  userHasData=true; // user made a real change
   clearTimeout(saveTimer);
   saveTimer=setTimeout(async()=>{
     if(!S.user)return;
-    try{await setDoc(userDoc(),{habits:S.habits,checks:S.checks,dark:S.dark,ts:Date.now()},{merge:true});}
+    try{await setDoc(userDoc(),{habits:S.habits,checks:S.checks,dark:S.dark,ts:Date.now(),ownerUid:S.user.uid},{merge:true});}
     catch(e){console.error('Save error',e);}
   },600);
 }
@@ -570,11 +582,19 @@ document.getElementById('googleSignInBtn').addEventListener('click',async()=>{
 onAuthStateChanged(auth,async user=>{
   if(user){
     S.user=user;
+    // Reset all data before loading — prevents previous account's data showing
+    S.habits=[...DEF_HABITS];
+    S.checks={};
+    S.dark=true;
+    userHasData=false;
     document.getElementById('loginScreen').style.display='none';
     document.getElementById('app').style.display='block';
     await loadData();render();
   }else{
     S.user=null;
+    // Clear data on sign out
+    S.habits=[...DEF_HABITS];
+    S.checks={};
     document.getElementById('loginScreen').style.display='flex';
     document.getElementById('app').style.display='none';
   }
