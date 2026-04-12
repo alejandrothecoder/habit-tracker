@@ -204,6 +204,9 @@ const fbApp = initializeApp(firebaseConfig);
 const auth = getAuth(fbApp);
 const db = getFirestore(fbApp);
 
+// Wipe any old localStorage data from previous versions of the app
+['cdb2','cdb3','cdb4','cdb5','cdb6','cdb7','cdb8'].forEach(k=>localStorage.removeItem(k));
+
 const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
 const MONTH_SHORT=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const QUOTES=[
