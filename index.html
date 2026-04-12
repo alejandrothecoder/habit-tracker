@@ -161,6 +161,9 @@
   .modal-add input:focus{border-color:var(--accent)}
   .modal-add button{background:var(--accent);color:white;border:none;border-radius:8px;padding:9px 16px;font-size:15px;cursor:pointer;font-weight:700}
   .modal-close{width:100%;background:var(--card2);border:1.5px solid var(--border);border-radius:10px;padding:11px;font-size:15px;cursor:pointer;color:var(--text2);font-weight:600}
+  .rename-btn{font-size:13px;color:var(--text3);cursor:pointer;border:none;background:none;padding:0 6px;flex-shrink:0}
+  .rename-btn:hover{color:var(--accent2)}
+  .rename-input{flex:1;border:1.5px solid var(--accent);border-radius:6px;padding:3px 8px;font-size:14px;background:var(--card2);color:var(--text1);outline:none}
 </style>
 </head>
 <body class="dark">
@@ -254,7 +257,7 @@ const S={
   habits:[...DEF_HABITS],
   checks:{}, // keyed by habitId_day_month_year
   dark:true,
-  showM:false, nH:'', user:null
+  showM:false, nH:'', user:null, renamingIdx:-1
 };
 
 let saveTimer=null, LC=null, RC=null;
@@ -476,7 +479,11 @@ ${S.showM?`<div class="modal-overlay" id="modalOverlay"><div class="modal">
     ${S.habits.map((h,i)=>`<li class="drag-item" draggable="true" data-idx="${i}">
       <div class="drag-item-top">
         <div class="drag-handle"><span></span><span></span><span></span></div>
-        <span class="drag-item-name">${h.name}</span>
+        ${S.renamingIdx===i
+          ? `<input class="rename-input" id="renameInput" value="${h.name}" data-ri="${i}" maxlength="40">`
+          : `<span class="drag-item-name">${h.name}</span>`
+        }
+        <button class="rename-btn" data-rename="${i}" title="Rename">✏️</button>
         <button class="remove-btn" data-ri="${i}">&#x2715;</button>
       </div>
       <div class="day-picker">
@@ -547,7 +554,7 @@ document.getElementById('app').addEventListener('click',e=>{
   // Edit open
   if(e.target.closest('#editBtn')){S.showM=true;render();return;}
   // Close modal
-  if(e.target.closest('#closeModalBtn')||e.target.id==='modalOverlay'){S.showM=false;render();return;}
+  if(e.target.closest('#closeModalBtn')||e.target.id==='modalOverlay'){S.showM=false;S.renamingIdx=-1;render();return;}
   // Add habit
   if(e.target.closest('#addHabitBtn')){
     const inp=document.getElementById('nHI');
@@ -559,6 +566,22 @@ document.getElementById('app').addEventListener('click',e=>{
   // Remove habit
   const rb=e.target.closest('.remove-btn');
   if(rb){S.habits.splice(parseInt(rb.dataset.ri),1);saveData();render();return;}
+  // Rename button — open inline input
+  const rnBtn=e.target.closest('.rename-btn');
+  if(rnBtn){
+    // Save any in-progress rename first
+    const existing=document.getElementById('renameInput');
+    if(existing){
+      const idx=parseInt(existing.dataset.ri);
+      if(existing.value.trim()) S.habits[idx].name=existing.value.trim();
+    }
+    S.renamingIdx=parseInt(rnBtn.dataset.rename);
+    render();
+    // Focus the input after render
+    const inp=document.getElementById('renameInput');
+    if(inp){inp.focus();inp.select();}
+    return;
+  }
   // Day pill toggle
   const dp=e.target.closest('.day-pill');
   if(dp){
@@ -570,7 +593,25 @@ document.getElementById('app').addEventListener('click',e=>{
     saveData();render();return;
   }
 });
-document.getElementById('app').addEventListener('input',e=>{if(e.target.id==='nHI')S.nH=e.target.value;});
+document.getElementById('app').addEventListener('input',e=>{
+  if(e.target.id==='nHI') S.nH=e.target.value;
+  if(e.target.id==='renameInput') S.habits[parseInt(e.target.dataset.ri)].name=e.target.value;
+});
+document.getElementById('app').addEventListener('keydown',e=>{
+  if(e.target.id==='renameInput' && e.key==='Enter'){
+    if(e.target.value.trim()) S.habits[parseInt(e.target.dataset.ri)].name=e.target.value.trim();
+    S.renamingIdx=-1;saveData();render();
+  }
+  if(e.target.id==='renameInput' && e.key==='Escape'){
+    S.renamingIdx=-1;render();
+  }
+});
+document.getElementById('app').addEventListener('focusout',e=>{
+  if(e.target.id==='renameInput'){
+    if(e.target.value.trim()) S.habits[parseInt(e.target.dataset.ri)].name=e.target.value.trim();
+    S.renamingIdx=-1;saveData();render();
+  }
+});
 
 // SIGN IN
 document.getElementById('googleSignInBtn').addEventListener('click',async()=>{
