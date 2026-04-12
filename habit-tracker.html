@@ -259,10 +259,16 @@ function applyTheme(){document.body.className=S.dark?'dark':'light';}
 function userDoc(){return doc(db,'users',S.user.uid,'data','main');}
 
 async function loadData(){
+  if(!S.user) return;
   try{
     const snap=await getDoc(userDoc());
     if(snap.exists()){
       const d=snap.data();
+      // Only load if this doc belongs to the current signed-in user
+      if(d.ownerUid && d.ownerUid !== S.user.uid) {
+        console.warn('Data owner mismatch — ignoring');
+        return;
+      }
       if(d.habits&&d.habits.length) S.habits=d.habits;
       if(d.checks) S.checks=d.checks;
       if(d.dark!==undefined) S.dark=d.dark;
@@ -275,14 +281,18 @@ async function loadData(){
       });
       applyTheme();
     }
-  }catch(e){console.error('Load error',e);}
+    // No data for this account yet — stays at clean defaults
+  }catch(e){
+    console.error('Load error',e);
+    // On any error, keep clean defaults — never show wrong account's data
+  }
 }
 
 function saveData(){
   clearTimeout(saveTimer);
   saveTimer=setTimeout(async()=>{
     if(!S.user)return;
-    try{await setDoc(userDoc(),{habits:S.habits,checks:S.checks,dark:S.dark,ts:Date.now()},{merge:true});}
+    try{await setDoc(userDoc(),{habits:S.habits,checks:S.checks,dark:S.dark,ts:Date.now(),ownerUid:S.user.uid},{merge:true});}
     catch(e){console.error('Save error',e);}
   },600);
 }
@@ -602,4 +612,3 @@ document.getElementById('app').addEventListener('drop',e=>{
 </script>
 </body>
 </html>
-
