@@ -263,34 +263,33 @@ function applyTheme(){document.body.className=S.dark?'dark':'light';}
 function userDoc(){return doc(db,'users',S.user.uid,'data','main');}
 
 async function loadData(){
+  // Always reset to clean defaults first no matter what
+  S.habits = DEF_HABITS.map(h=>({...h, days:[...h.days]}));
+  S.checks = {};
+  S.dark = true;
+  userHasData = false;
   if(!S.user) return;
   try{
-    const snap=await getDoc(userDoc());
-    alert('Firestore snap exists: ' + snap.exists() + ' | UID: ' + S.user.uid);
-    if(snap.exists()){
-      const d=snap.data();
-      // Only load if this doc belongs to the current signed-in user
-      if(d.ownerUid && d.ownerUid !== S.user.uid) {
-        console.warn('Data owner mismatch — ignoring');
-        return;
-      }
-      if(d.habits&&d.habits.length) S.habits=d.habits;
-      if(d.checks) S.checks=d.checks;
-      if(d.dark!==undefined) S.dark=d.dark;
-      userHasData=true; // existing data found for this account
-      // Migrate old habits (strings → objects) if needed
-      S.habits=S.habits.map((h,i)=>{
+    const snap = await getDoc(userDoc());
+    if(!snap.exists()) return;
+    const d = snap.data();
+    if(!d.ownerUid || d.ownerUid !== S.user.uid) return;
+    if(d.habits && Array.isArray(d.habits) && d.habits.length){
+      S.habits = d.habits.map((h,i)=>{
         if(typeof h==='string') return{id:'h_legacy_'+i,name:h,days:[0,1,2,3,4,5,6]};
         if(!h.days) h.days=[0,1,2,3,4,5,6];
         if(!h.id) h.id='h_legacy_'+i;
         return h;
       });
-      applyTheme();
     }
-    // No data for this account yet — stays at clean defaults
+    if(d.checks && typeof d.checks==='object') S.checks = d.checks;
+    if(d.dark !== undefined) S.dark = d.dark;
+    userHasData = true;
+    applyTheme();
   }catch(e){
+    S.habits = DEF_HABITS.map(h=>({...h, days:[...h.days]}));
+    S.checks = {};
     console.error('Load error',e);
-    // On any error, keep clean defaults — never show wrong account's data
   }
 }
 
