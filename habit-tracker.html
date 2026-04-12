@@ -257,6 +257,7 @@ const S={
 };
 
 let saveTimer=null, LC=null, RC=null;
+let userHasData=false; // only true after user makes a real change or loads existing data
 function applyTheme(){document.body.className=S.dark?'dark':'light';}
 
 function userDoc(){return doc(db,'users',S.user.uid,'data','main');}
@@ -275,6 +276,7 @@ async function loadData(){
       if(d.habits&&d.habits.length) S.habits=d.habits;
       if(d.checks) S.checks=d.checks;
       if(d.dark!==undefined) S.dark=d.dark;
+      userHasData=true; // existing data found for this account
       // Migrate old habits (strings → objects) if needed
       S.habits=S.habits.map((h,i)=>{
         if(typeof h==='string') return{id:'h_legacy_'+i,name:h,days:[0,1,2,3,4,5,6]};
@@ -292,6 +294,7 @@ async function loadData(){
 }
 
 function saveData(){
+  userHasData=true; // user made a real change
   clearTimeout(saveTimer);
   saveTimer=setTimeout(async()=>{
     if(!S.user)return;
@@ -583,6 +586,7 @@ onAuthStateChanged(auth,async user=>{
     S.habits=[...DEF_HABITS];
     S.checks={};
     S.dark=true;
+    userHasData=false;
     document.getElementById('loginScreen').style.display='none';
     document.getElementById('app').style.display='block';
     await loadData();render();
